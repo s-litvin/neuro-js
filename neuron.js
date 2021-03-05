@@ -3,6 +3,8 @@ class Cell
 	constructor() {
 		this.setInput(0);
 		this.setOutput(0);
+		this.setTargetOutput(0);
+		this.error = 0;
 	}
 
 	setInput(input) {
@@ -11,6 +13,18 @@ class Cell
 
 	setOutput(output) {
 		this.output = output;
+	}
+
+	setTargetOutput(targetOutput) {
+		this.targetOutput = targetOutput;
+	}
+
+	calcError() {
+		this.error = 0.5 * Math.pow(this.targetOutput - this.getOutput(), 2);
+	}
+
+	getError() {
+		return this.error;
 	}
 
 	getOutput() {

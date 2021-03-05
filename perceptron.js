@@ -1,9 +1,9 @@
 class Perceptron
 {
-
 	constructor() {
 		this.cells = [];
 		this.layers = [];
+		this.totalError = 0;
 	}
 
 	addNeuron(cell, id, layer) {
@@ -72,15 +72,17 @@ class Perceptron
 
 			for (let index = 0; index < neurones.length; index++) {
 				let neuron = neurones[index];
-				let inputSum = 0;
+				let inputSum = neuron.cell.input;
 				let leftLinks = this.getNeuronLinks(neuron, 'left');
 
 				for (let li = 0; li < leftLinks.length; li++) {
 					inputSum += leftLinks[li].neuron.cell.getOutput() * leftLinks[li].weight;
+					console.log('input sum: ' + inputSum);
 				}
 
 				neuron.cell.setInput(inputSum);
 				neuron.cell.calcOutput();
+				
 				this.updateNeuron(neuron.id, neuron);
 
 				console.log(neurones[index]);
@@ -91,4 +93,18 @@ class Perceptron
 
 	}
 
+	calcErrors() {
+		let totalError = 0;
+		let lastLayerNeurones = this.getNeuronsByLayer(3);
+
+		for (let i = 0; i < lastLayerNeurones.length; i++) {
+			let neuron = lastLayerNeurones[i];
+			neuron.cell.calcError();
+			this.updateNeuron(neuron.id, neuron);
+			this.totalError += neuron.cell.getError();
+		}
+	}
+
+	backPropagation() {
+	}
 }
