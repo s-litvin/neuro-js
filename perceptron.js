@@ -4,6 +4,7 @@ class Perceptron
 		this.cells = [];
 		this.layers = [];
 		this.totalError = 0;
+		this.speed = 0.1;
 	}
 
 	addNeuron(cell, id, layer) {
@@ -13,11 +14,6 @@ class Perceptron
 
 	updateNeuron(id, cell) {
 		this.cells[this.findNeuronIndexById(id)] = cell;
-		this.indexLayers();
-	}
-
-	deleteNeuron(id) {
-		this.cells.splice(this.findNeuronIndexById(id), 1);
 		this.indexLayers();
 	}
 
@@ -61,14 +57,21 @@ class Perceptron
 		this.updateNeuron(id2, n2);
 	}
 
+	unlink(id1, id2) {
+		let n1 = this.getNeuron(id1);
+		let n2 = this.getNeuron(id2);
+		n1.links = n1.links.filter(link => link.id !== id2);
+		n2.links = n1.links.filter(link => link.id !== id1);
+		this.updateNeuron(id1, n1);
+		this.updateNeuron(id2, n2);
+	}
+
 	forwardPass() {
 		
 		for (let i = 0; i < this.layers.length; i++) {
 
 			let layer = this.layers[i];
 			let neurones = this.getNeuronsByLayer(layer);
-
-			console.log('Layer: ' + layer);
 
 			for (let index = 0; index < neurones.length; index++) {
 				let neuron = neurones[index];
@@ -83,9 +86,6 @@ class Perceptron
 				neuron.cell.calcOutput();
 				
 				this.updateNeuron(neuron.id, neuron);
-
-				console.log(neurones[index]);
-				console.log(leftLinks)
 			}
 		}
 	}
@@ -111,13 +111,38 @@ class Perceptron
 
 				this.updateNeuron(neuron.id, neuron);
 
-				if (i === this.layers[this.layers.length]) {
+				if (li === this.layers.length - 1) {
 					this.totalError += neuron.cell.getError();
 				}
 			}
 		}
 	}
 
+	updateWeights() {
+		for (let i = 0; i < this.layers.length; i++) {
+
+			let layer = this.layers[i];
+			let neurones = this.getNeuronsByLayer(layer);
+
+			for (let index = 0; index < neurones.length; index++) {
+
+				let neuron = neurones[index];
+				let rightLinks = this.getNeuronLinks(neuron, 'right');
+
+				neuron.links = [];
+
+				for (let j = 0; j < rightLinks.length; j++) {
+					let rightNeuron = rightLinks[j].neuron;
+					let newWeight = rightLinks[j].weight + rightNeuron.cell.getDerivative() * rightNeuron.cell.getError() * neuron.cell.getOutput() * this.speed;
+					this.unlink(neuron.id, rightNeuron.id);
+					this.link(neuron.id, rightNeuron.id, newWeight)
+				}
+			}
+		}
+	}
+
 	backPropagation() {
+		this.calcErrors();
+		this.updateWeights();
 	}
 }

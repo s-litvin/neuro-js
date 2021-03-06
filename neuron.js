@@ -5,6 +5,7 @@ class Cell
 		this.setOutput(0);
 		this.setTargetOutput(null);
 		this.error = 0;
+		this.derivative = 0;
 	}
 
 	setInput(input) {
@@ -27,6 +28,10 @@ class Cell
 		return this.error;
 	}
 
+	getDerivative() {
+		return this.derivative;
+	}
+
 	getTargetOutput() {
 		return this.targetOutput;
 	}
@@ -43,6 +48,8 @@ class Cell
 
 	calcOutput() {
 		this.setOutput(1 / (1 + Math.pow(2.718, -1 * this.input)));
+		this.derivative = this.getOutput() * (1 - this.getOutput());
+
 		return this.getOutput();
 	}
 

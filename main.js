@@ -35,9 +35,8 @@ perceptron.updateNeuron('o1', outputNeuron1);
 
 // Forward pass
 perceptron.forwardPass();
-perceptron.calcErrors();
 
 // Learning
-// perceptron.backPropagation();
+perceptron.backPropagation();
 
 console.log(perceptron);
