@@ -7,7 +7,7 @@ class Perceptron
 	}
 
 	addNeuron(cell, id, layer) {
-		this.cells.push({'id': id, 'cell': cell, 'links': [], 'layer': layer});
+		this.cells.push({'id': id, 'cell': cell, 'links': [], 'layer': layer + 0});
 		this.indexLayers();
 	}
 
@@ -77,7 +77,6 @@ class Perceptron
 
 				for (let li = 0; li < leftLinks.length; li++) {
 					inputSum += leftLinks[li].neuron.cell.getOutput() * leftLinks[li].weight;
-					console.log('input sum: ' + inputSum);
 				}
 
 				neuron.cell.setInput(inputSum);
@@ -88,20 +87,34 @@ class Perceptron
 				console.log(neurones[index]);
 				console.log(leftLinks)
 			}
-
 		}
-
 	}
 
 	calcErrors() {
-		let totalError = 0;
-		let lastLayerNeurones = this.getNeuronsByLayer(3);
 
-		for (let i = 0; i < lastLayerNeurones.length; i++) {
-			let neuron = lastLayerNeurones[i];
-			neuron.cell.calcError();
-			this.updateNeuron(neuron.id, neuron);
-			this.totalError += neuron.cell.getError();
+		for (let li = this.layers.length - 1; li >= 0; li--) {
+			let neurones = this.getNeuronsByLayer(this.layers[li]);
+
+			for (let i = 0; i < neurones.length; i++) {
+				let neuron = neurones[i];
+
+				let rightLinks = this.getNeuronLinks(neuron, 'right');
+
+				if (rightLinks.length === 0) { // если это последний слой, то ошибка вычисляется разницей ожидания и выхода
+					neuron.cell.setError(neuron.cell.getTargetOutput() - neuron.cell.getOutput());
+				} else { // если слой скрытый, то ошибка - сумма ошибок правых узлов умноженных на веса.
+					for (let j = 0; j < rightLinks.length; j++) {
+						let rightNeuron = rightLinks[j].neuron;
+						neuron.cell.setError(neuron.cell.getError() + (rightNeuron.cell.getError() * rightLinks[j].weight));
+					}
+				}
+
+				this.updateNeuron(neuron.id, neuron);
+
+				if (i === this.layers[this.layers.length]) {
+					this.totalError += neuron.cell.getError();
+				}
+			}
 		}
 	}
 
