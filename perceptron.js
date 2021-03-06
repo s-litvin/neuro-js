@@ -61,7 +61,7 @@ class Perceptron
 		let n1 = this.getNeuron(id1);
 		let n2 = this.getNeuron(id2);
 		n1.links = n1.links.filter(link => link.id !== id2);
-		n2.links = n1.links.filter(link => link.id !== id1);
+		n2.links = n2.links.filter(link => link.id !== id1);
 		this.updateNeuron(id1, n1);
 		this.updateNeuron(id2, n2);
 	}
