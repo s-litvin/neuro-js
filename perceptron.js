@@ -176,7 +176,7 @@ class Perceptron
 	backPropagation() {
 
 		if (this.getEpoch() > 1 && this.getErrorTrashold() > Math.abs(this.getNetError())) {
-			return;
+			return false;
 		}
 
 		this.calcErrors();
