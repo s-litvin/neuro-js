@@ -148,7 +148,7 @@ canvas.addEventListener('click', function(evnt) {
         let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
         window.location.href = image;
     } else  if (isInside(mousePos, {x:575, y:0, width:82, height:20})) {
-        initPerceptron();
+        location.reload();
     }
 }, false);
 
