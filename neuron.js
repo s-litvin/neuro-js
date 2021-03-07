@@ -1,11 +1,12 @@
 class Cell
 {
-	constructor() {
+	constructor(isInput = false) {
 		this.setInput(0);
 		this.setOutput(0);
 		this.setTargetOutput(null);
 		this.error = 0;
 		this.derivative = 0;
+		this.isInput = isInput;
 	}
 
 	setInput(input) {
@@ -47,7 +48,12 @@ class Cell
 	}
 
 	calcOutput(inputSum) {
-		this.setOutput(1 / (1 + Math.pow(2.718, -1 * inputSum)));
+		if (this.isInput) {
+			this.setOutput(inputSum);
+		} else {
+			this.setOutput(1 / (1 + Math.pow(2.718, -1 * inputSum)));
+		}
+
 		this.derivative = this.getOutput() * (1 - this.getOutput());
 
 		return this.getOutput();

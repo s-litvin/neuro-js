@@ -4,21 +4,23 @@ ctx = cnvs.getContext('2d');
 cnvs.width  = 800;
 cnvs.height = 700;
 
-
 // --(i1)--(n1)
 //       \/    \__(o1)
 //       /\    /
-// --(i2)--(n2)
+// --(i1)--(n1)
+//       \/    \__(o2)
+//       /\    /
+// --(i3)--(n3)
 
-let perceptron = new Perceptron(1);
+let perceptron = new Perceptron(0.98, 0.001);
 
 // Creating neurones
-perceptron.addNeuron(new Cell(), 'i1', 1);
-perceptron.addNeuron(new Cell(), 'i2', 1);
-perceptron.addNeuron(new Cell(), 'i3', 1);
+perceptron.addNeuron(new Cell(true), 'i1', 1);
+perceptron.addNeuron(new Cell(true), 'i2', 1);
+perceptron.addNeuron(new Cell(true), 'i3', 1);
 perceptron.addNeuron(new Cell(), 'n1', 2, 0.04);
 perceptron.addNeuron(new Cell(), 'n2', 2, 0.03);
-perceptron.addNeuron(new Cell(), 'n3', 2, 0.03);
+perceptron.addNeuron(new Cell(), 'n3', 2, 0.13);
 perceptron.addNeuron(new Cell(), 'o1', 3);
 perceptron.addNeuron(new Cell(), 'o2', 3);
 
@@ -46,9 +48,9 @@ let inputNeuron3  = perceptron.getNeuron('i3');
 let outputNeuron1 = perceptron.getNeuron('o1');
 let outputNeuron2 = perceptron.getNeuron('o2');
 
-inputNeuron1.cell.setInput(0.5);
-inputNeuron2.cell.setInput(0.33);
-inputNeuron3.cell.setInput(0.33);
+inputNeuron1.cell.setInput(0.51);
+inputNeuron2.cell.setInput(0.12);
+inputNeuron3.cell.setInput(0.45);
 outputNeuron1.cell.setTargetOutput(0.9);
 outputNeuron2.cell.setTargetOutput(0.1);
 
@@ -66,9 +68,7 @@ function calcNet(perceptron) {
     // Learning
     perceptron.backPropagation();
 
-    if (Math.pow(perceptron.getNetError(), 2) >= 0.00001) {
-        setInterval(function () { if (Math.pow(perceptron.getNetError(), 2) > 0.00001) {calcNet(perceptron);}}, 400);
-    }
+    setInterval(function () { calcNet(perceptron);}, 100);
 }
 
 calcNet(perceptron);
@@ -84,6 +84,9 @@ function drawNet(perceptron) {
 
     ctx.fillStyle = "white";
     ctx.fillText('Epoch: ' + perceptron.getEpoch(), 20, 15);
+    ctx.fillText('Learning rate: ' + perceptron.getLearningRate(), 120, 15);
+    ctx.fillText('Net error: ' + perceptron.getNetError().toFixed(7), 260, 15);
+    ctx.fillText('Err threshold: ' + perceptron.getErrorTrashold(), 420, 15);
 
     let neuronPositions = {};
 
@@ -119,22 +122,29 @@ function drawNet(perceptron) {
                 }
             }
 
-            ctx.fillStyle = "#ccc";
+            ctx.fillStyle = "#ddd";
             ctx.fillRect(posX, posY, neuronSize, neuronSize);
 
-            ctx.fillStyle = "#555555";
+            ctx.fillStyle = "#555";
             ctx.fillText(neuron.id, neuronSize / 5 + posX, neuronSize / 1.6  + posY);
 
             if (rightLinksCount === 0) {
-                ctx.fillStyle = "#333333";
+                ctx.fillStyle = "#333";
                 ctx.fillText('out: ' + neuron.cell.getOutput().toFixed(3), neuronSize * 1.3 + posX, neuronSize / 2.3 + posY);
                 ctx.fillStyle = "grey";
                 ctx.fillText('target: ' + neuron.cell.getTargetOutput().toFixed(3), neuronSize * 1.3 + posX, neuronSize / 1 + posY);
             }
 
             if (leftLinksCount === 0) {
-                ctx.fillStyle = "#333333";
-                ctx.fillText('in: ' + neuron.cell.input.toFixed(3), neuronSize * -0.4 + posX, posY - neuronSize / 5);
+                ctx.fillStyle = "#333";
+                ctx.fillText('in: ' + neuron.cell.input.toFixed(2), neuronSize * -0.4 + posX, posY - neuronSize / 5);
+            }
+
+            if (neuron.bias !== 0) {
+                ctx.fillStyle = "#c3c";
+                ctx.font = "11px Arial";
+                ctx.fillText('b: ' + neuron.bias.toFixed(2), neuronSize * -0.1 + posX, posY - neuronSize / 5);
+                ctx.font = "14px Arial";
             }
         }
 

@@ -1,11 +1,20 @@
 class Perceptron
 {
-	constructor(learningRate = 0.01) {
+	constructor(learningRate = 0.1, errorTrashhold = 0.0001) {
 		this.cells = [];
 		this.layers = [];
 		this.totalError = 0;
 		this.learningRate = learningRate;
+		this.errorTrashold = errorTrashhold;
 		this.resetEpoch();
+	}
+
+	getLearningRate() {
+		return this.learningRate;
+	}
+
+	getErrorTrashold() {
+		return this.errorTrashold;
 	}
 
 	getEpoch() {
@@ -165,6 +174,11 @@ class Perceptron
 	}
 
 	backPropagation() {
+
+		if (this.getEpoch() > 1 && this.getErrorTrashold() > Math.abs(this.getNetError())) {
+			return;
+		}
+
 		this.calcErrors();
 		this.updateWeights();
 	}
