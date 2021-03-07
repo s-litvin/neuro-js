@@ -11,6 +11,7 @@ perceptron.addNeuron(new Cell(), 'i2', 1);
 perceptron.addNeuron(new Cell(), 'n1', 2, 0.04);
 perceptron.addNeuron(new Cell(), 'n2', 2, 0.03);
 perceptron.addNeuron(new Cell(), 'o1', 3);
+perceptron.addNeuron(new Cell(), 'o2', 3);
 
 // Linking neurones
 perceptron.link('i1', 'n1', 0.3);
@@ -19,19 +20,24 @@ perceptron.link('i2', 'n1', 0.41);
 perceptron.link('i2', 'n2', 0.2);
 perceptron.link('n1', 'o1', 0.7);
 perceptron.link('n2', 'o1', 0.2);
+perceptron.link('n1', 'o2', 0.2);
+perceptron.link('n2', 'o2', 0.4);
 
 // Set inputs and target outputs
 let inputNeuron1  = perceptron.getNeuron('i1');
 let inputNeuron2  = perceptron.getNeuron('i2');
 let outputNeuron1 = perceptron.getNeuron('o1');
+let outputNeuron2 = perceptron.getNeuron('o2');
 
 inputNeuron1.cell.setInput(0.5);
 inputNeuron2.cell.setInput(0.33);
-outputNeuron1.cell.setTargetOutput(0.1);
+outputNeuron1.cell.setTargetOutput(0.9);
+outputNeuron2.cell.setTargetOutput(0.1);
 
 perceptron.updateNeuron('i1', inputNeuron1);
 perceptron.updateNeuron('i2', inputNeuron2);
 perceptron.updateNeuron('o1', outputNeuron1);
+perceptron.updateNeuron('o2', outputNeuron2);
 
 let i = 0;
 for (i; i < 100000; i++) {
@@ -41,11 +47,10 @@ for (i; i < 100000; i++) {
     // Learning
     perceptron.backPropagation();
 
-    if (Math.pow(perceptron.getNeuron('o1').cell.getError(),2) < 0.00001) {
+    if (Math.pow(perceptron.getNetError(), 2) < 0.00001) {
         break;
     }
 
 }
 
-console.log('Iterations: ' + i, perceptron.getNeuron('o1').cell.getOutput(),'Error: ' + perceptron.getNeuron('o1').cell.getError());
-console.log(perceptron);
+console.log('#: ' + i, 'O1: ' + perceptron.getNeuron('o1').cell.getOutput(), 'O2: ' + perceptron.getNeuron('o2').cell.getOutput());

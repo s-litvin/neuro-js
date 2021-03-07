@@ -7,6 +7,10 @@ class Perceptron
 		this.learningRate = learningRate;
 	}
 
+	getNetError() {
+		return this.totalError;
+	}
+
 	addNeuron(cell, id, layer, bias = 0) {
 		this.cells.push({'id': id, 'cell': cell, 'links': [], 'layer': layer + 0, 'bias': bias});
 		this.indexLayers();
@@ -95,6 +99,8 @@ class Perceptron
 	}
 
 	calcErrors() {
+
+		this.totalError = 0;
 
 		for (let li = this.layers.length - 1; li >= 0; li--) {
 			let neurones = this.getNeuronsByLayer(this.layers[li]);
