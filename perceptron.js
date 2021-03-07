@@ -1,14 +1,14 @@
 class Perceptron
 {
-	constructor() {
+	constructor(learningRate = 0.01) {
 		this.cells = [];
 		this.layers = [];
 		this.totalError = 0;
-		this.speed = 0.1;
+		this.learningRate = learningRate;
 	}
 
-	addNeuron(cell, id, layer) {
-		this.cells.push({'id': id, 'cell': cell, 'links': [], 'layer': layer + 0});
+	addNeuron(cell, id, layer, bias = 0) {
+		this.cells.push({'id': id, 'cell': cell, 'links': [], 'layer': layer + 0, 'bias': bias});
 		this.indexLayers();
 	}
 
@@ -75,6 +75,7 @@ class Perceptron
 
 			for (let index = 0; index < neurones.length; index++) {
 				let neuron = neurones[index];
+				let input = neuron.cell.input;
 				let inputSum = neuron.cell.input;
 				let leftLinks = this.getNeuronLinks(neuron, 'left');
 
@@ -82,9 +83,12 @@ class Perceptron
 					inputSum += leftLinks[li].neuron.cell.getOutput() * leftLinks[li].weight;
 				}
 
+				inputSum += neuron.bias;
+
 				neuron.cell.setInput(inputSum);
 				neuron.cell.calcOutput();
-				
+				neuron.cell.setInput(input);
+
 				this.updateNeuron(neuron.id, neuron);
 			}
 		}
@@ -103,10 +107,19 @@ class Perceptron
 				if (rightLinks.length === 0) { // если это последний слой, то ошибка вычисляется разницей ожидания и выхода
 					neuron.cell.setError(neuron.cell.getTargetOutput() - neuron.cell.getOutput());
 				} else { // если слой скрытый, то ошибка - сумма ошибок правых узлов умноженных на веса.
+					let errorsSum = 0;
+					let weightsSum = 0;
+
+					for (let j = 0; j < rightLinks.length; j++) {
+						weightsSum += rightLinks[j].weight;
+					}
+
 					for (let j = 0; j < rightLinks.length; j++) {
 						let rightNeuron = rightLinks[j].neuron;
-						neuron.cell.setError(neuron.cell.getError() + (rightNeuron.cell.getError() * rightLinks[j].weight));
+						errorsSum += rightNeuron.cell.getError() * rightLinks[j].weight;
 					}
+
+					neuron.cell.setError(errorsSum);
 				}
 
 				this.updateNeuron(neuron.id, neuron);
@@ -129,11 +142,9 @@ class Perceptron
 				let neuron = neurones[index];
 				let rightLinks = this.getNeuronLinks(neuron, 'right');
 
-				neuron.links = [];
-
 				for (let j = 0; j < rightLinks.length; j++) {
 					let rightNeuron = rightLinks[j].neuron;
-					let newWeight = rightLinks[j].weight + rightNeuron.cell.getDerivative() * rightNeuron.cell.getError() * neuron.cell.getOutput() * this.speed;
+					let newWeight = rightLinks[j].weight + rightNeuron.cell.getDerivative() * rightNeuron.cell.getError() * neuron.cell.getOutput() * this.learningRate;
 					this.unlink(neuron.id, rightNeuron.id);
 					this.link(neuron.id, rightNeuron.id, newWeight)
 				}
