@@ -243,7 +243,7 @@ function drawNet(perceptron) {
                         ctx.moveTo(posX, posY + neuronSize / 2);
                         ctx.lineTo(neuronPositions[neuron.links[k].id][0] + neuronSize, neuronPositions[neuron.links[k].id][1] + neuronSize / 2);
                         ctx.lineWidth = neuron.links[k].weight * 2;
-                        ctx.strokeStyle = '#5555ff';
+                        ctx.strokeStyle = '#496cab';
                         ctx.stroke();
                     } else {
                         rightLinksCount++;
@@ -251,10 +251,10 @@ function drawNet(perceptron) {
                 }
             }
 
-            ctx.fillStyle = "#ddd";
+            ctx.fillStyle = "#e3e2e5";
             ctx.fillRect(posX, posY, neuronSize, neuronSize);
 
-            ctx.fillStyle = "#555";
+            ctx.fillStyle = "#6c6c6c";
             ctx.fillText(neuron.id, neuronSize / 8 + posX, neuronSize / 1.6  + posY);
 
             if (rightLinksCount === 0 && neuron.cell.getTargetOutput() !== null) {
