@@ -4,13 +4,13 @@ ctx = canvas.getContext('2d');
 canvas.width  = 800;
 canvas.height = 700;
 
-// --(i1)--(n1)
-//       \/    \__(o1)
+// --(x1)--(h11)
+//       \/    \__(y1)
 //       /\    /
-// --(i1)--(n1)
-//       \/    \__(o2)
+// --(x1)--(h11)
+//       \/    \__(y2)
 //       /\    /
-// --(i3)--(n3)
+// --(x3)--(h13)
 
 let perceptron;
 
@@ -19,98 +19,139 @@ function initPerceptron() {
     perceptron = new Perceptron(0.98, 0.001);
 
 // Creating neurones
-    perceptron.addNeuron(new Cell(true), 'i1', 1);
-    perceptron.addNeuron(new Cell(true), 'i2', 1);
-    perceptron.addNeuron(new Cell(true), 'i3', 1);
-    perceptron.addNeuron(new Cell(true), 'i4', 1);
-    perceptron.addNeuron(new Cell(true), 'i5', 1);
-    perceptron.addNeuron(new Cell(), 'n1', 2, 0.04);
-    perceptron.addNeuron(new Cell(), 'n2', 2, 0.03);
-    perceptron.addNeuron(new Cell(), 'n3', 2);
-    perceptron.addNeuron(new Cell(), 'n4', 2, 0.53);
-    perceptron.addNeuron(new Cell(), 'n5', 2);
-    perceptron.addNeuron(new Cell(), 'o1', 3);
-    perceptron.addNeuron(new Cell(), 'o2', 3);
-    perceptron.addNeuron(new Cell(), 'o3', 3);
+    perceptron.addNeuron(new Cell(true), 'x1', 1);
+    perceptron.addNeuron(new Cell(true), 'x2', 1);
+    perceptron.addNeuron(new Cell(true), 'x3', 1);
+    perceptron.addNeuron(new Cell(true), 'x4', 1);
+    perceptron.addNeuron(new Cell(true), 'x5', 1);
+
+    perceptron.addNeuron(new Cell(), 'h11', 2, 0.04);
+    perceptron.addNeuron(new Cell(), 'h12', 2, 0.03);
+    perceptron.addNeuron(new Cell(), 'h13', 2);
+    perceptron.addNeuron(new Cell(), 'h14', 2, 0.53);
+    perceptron.addNeuron(new Cell(), 'h15', 2);
+
+    perceptron.addNeuron(new Cell(), 'h21', 3, 0.14);
+    perceptron.addNeuron(new Cell(), 'h22', 3);
+    perceptron.addNeuron(new Cell(), 'h23', 3);
+    perceptron.addNeuron(new Cell(), 'h24', 3, 0.11);
+    perceptron.addNeuron(new Cell(), 'h25', 3, 0.27);
+
+    perceptron.addNeuron(new Cell(), 'y1', 4);
+    perceptron.addNeuron(new Cell(), 'y2', 4);
+    perceptron.addNeuron(new Cell(), 'y3', 4);
 
 // Linking neurones
-    perceptron.link('i1', 'n1');
-    perceptron.link('i1', 'n2');
-    perceptron.link('i1', 'n3');
-    perceptron.link('i1', 'n4');
-    perceptron.link('i1', 'n5');
+    perceptron.link('x1', 'h11');
+    perceptron.link('x1', 'h12');
+    perceptron.link('x1', 'h13');
+    perceptron.link('x1', 'h14');
+    perceptron.link('x1', 'h15');
 
-    perceptron.link('i2', 'n1');
-    perceptron.link('i2', 'n2');
-    perceptron.link('i2', 'n3');
-    perceptron.link('i2', 'n4');
-    perceptron.link('i2', 'n5');
+    perceptron.link('x2', 'h11');
+    perceptron.link('x2', 'h12');
+    perceptron.link('x2', 'h13');
+    perceptron.link('x2', 'h14');
+    perceptron.link('x2', 'h15');
 
-    perceptron.link('i3', 'n1');
-    perceptron.link('i3', 'n2');
-    perceptron.link('i3', 'n3');
-    perceptron.link('i3', 'n4');
-    perceptron.link('i3', 'n5');
+    perceptron.link('x3', 'h11');
+    perceptron.link('x3', 'h12');
+    perceptron.link('x3', 'h13');
+    perceptron.link('x3', 'h14');
+    perceptron.link('x3', 'h15');
 
-    perceptron.link('i4', 'n1');
-    perceptron.link('i4', 'n2');
-    perceptron.link('i4', 'n3');
-    perceptron.link('i4', 'n4');
-    perceptron.link('i4', 'n5');
+    perceptron.link('x4', 'h11');
+    perceptron.link('x4', 'h12');
+    perceptron.link('x4', 'h13');
+    perceptron.link('x4', 'h14');
+    perceptron.link('x4', 'h15');
 
-    perceptron.link('i5', 'n1');
-    perceptron.link('i5', 'n2');
-    perceptron.link('i5', 'n3');
-    perceptron.link('i5', 'n4');
-    perceptron.link('i5', 'n5');
+    perceptron.link('x5', 'h11');
+    perceptron.link('x5', 'h12');
+    perceptron.link('x5', 'h13');
+    perceptron.link('x5', 'h14');
+    perceptron.link('x5', 'h15');
+    //
 
-    perceptron.link('n1', 'o1');
-    perceptron.link('n1', 'o2');
-    perceptron.link('n1', 'o3');
+    perceptron.link('h11', 'h21');
+    perceptron.link('h11', 'h22');
+    perceptron.link('h11', 'h23');
+    perceptron.link('h11', 'h24');
+    perceptron.link('h11', 'h25');
 
-    perceptron.link('n2', 'o1');
-    perceptron.link('n2', 'o2');
-    perceptron.link('n2', 'o3');
+    perceptron.link('h12', 'h21');
+    perceptron.link('h12', 'h22');
+    perceptron.link('h12', 'h23');
+    perceptron.link('h12', 'h24');
+    perceptron.link('h12', 'h25');
 
-    perceptron.link('n3', 'o1');
-    perceptron.link('n3', 'o2');
-    perceptron.link('n3', 'o3');
+    perceptron.link('h13', 'h21');
+    perceptron.link('h13', 'h22');
+    perceptron.link('h13', 'h23');
+    perceptron.link('h13', 'h24');
+    perceptron.link('h13', 'h25');
 
-    perceptron.link('n4', 'o1');
-    perceptron.link('n4', 'o2');
-    perceptron.link('n4', 'o3');
+    perceptron.link('h14', 'h21');
+    perceptron.link('h14', 'h22');
+    perceptron.link('h14', 'h23');
+    perceptron.link('h14', 'h24');
+    perceptron.link('h14', 'h25');
 
-    perceptron.link('n5', 'o1');
-    perceptron.link('n5', 'o2');
-    perceptron.link('n5', 'o3');
+    perceptron.link('h15', 'h21');
+    perceptron.link('h15', 'h22');
+    perceptron.link('h15', 'h23');
+    perceptron.link('h15', 'h24');
+    perceptron.link('h15', 'h25');
+    
+    //
+
+    perceptron.link('h21', 'y1');
+    perceptron.link('h21', 'y2');
+    perceptron.link('h21', 'y3');
+
+    perceptron.link('h22', 'y1');
+    perceptron.link('h22', 'y2');
+    perceptron.link('h22', 'y3');
+
+    perceptron.link('h23', 'y1');
+    perceptron.link('h23', 'y2');
+    perceptron.link('h23', 'y3');
+
+    perceptron.link('h24', 'y1');
+    perceptron.link('h24', 'y2');
+    perceptron.link('h24', 'y3');
+
+    perceptron.link('h25', 'y1');
+    perceptron.link('h25', 'y2');
+    perceptron.link('h25', 'y3');
 
 // Set inputs and target outputs
-    let inputNeuron1  = perceptron.getNeuron('i1');
-    let inputNeuron2  = perceptron.getNeuron('i2');
-    let inputNeuron4  = perceptron.getNeuron('i3');
-    let inputNeuron5  = perceptron.getNeuron('i4');
-    let inputNeuron3  = perceptron.getNeuron('i5');
-    let outputNeuron1 = perceptron.getNeuron('o1');
-    let outputNeuron2 = perceptron.getNeuron('o2');
-    let outputNeuron3 = perceptron.getNeuron('o3');
+    let inputNeuroh11  = perceptron.getNeuron('x1');
+    let inputNeuroh12  = perceptron.getNeuron('x2');
+    let inputNeuroh14  = perceptron.getNeuron('x3');
+    let inputNeuroh15  = perceptron.getNeuron('x4');
+    let inputNeuroh13  = perceptron.getNeuron('x5');
+    let outputNeuroh11 = perceptron.getNeuron('y1');
+    let outputNeuroh12 = perceptron.getNeuron('y2');
+    let outputNeuroh13 = perceptron.getNeuron('y3');
 
-    inputNeuron1.cell.setInput(0.61);
-    inputNeuron2.cell.setInput(0.12);
-    inputNeuron3.cell.setInput(0.45);
-    inputNeuron4.cell.setInput(0.23);
-    inputNeuron5.cell.setInput(0.29);
-    outputNeuron1.cell.setTargetOutput(0.9);
-    outputNeuron2.cell.setTargetOutput(0.1);
-    outputNeuron3.cell.setTargetOutput(0.2);
+    inputNeuroh11.cell.setInput(0.61);
+    inputNeuroh12.cell.setInput(0.12);
+    inputNeuroh13.cell.setInput(0.45);
+    inputNeuroh14.cell.setInput(0.23);
+    inputNeuroh15.cell.setInput(0.29);
+    outputNeuroh11.cell.setTargetOutput(0.9);
+    outputNeuroh12.cell.setTargetOutput(0.1);
+    outputNeuroh13.cell.setTargetOutput(0.2);
 
-    perceptron.updateNeuron('i1', inputNeuron1);
-    perceptron.updateNeuron('i2', inputNeuron2);
-    perceptron.updateNeuron('i3', inputNeuron3);
-    perceptron.updateNeuron('i4', inputNeuron4);
-    perceptron.updateNeuron('i5', inputNeuron5);
-    perceptron.updateNeuron('o1', outputNeuron1);
-    perceptron.updateNeuron('o2', outputNeuron2);
-    perceptron.updateNeuron('o3', outputNeuron3);
+    perceptron.updateNeuron('x1', inputNeuroh11);
+    perceptron.updateNeuron('x2', inputNeuroh12);
+    perceptron.updateNeuron('x3', inputNeuroh13);
+    perceptron.updateNeuron('x4', inputNeuroh14);
+    perceptron.updateNeuron('x5', inputNeuroh15);
+    perceptron.updateNeuron('y1', outputNeuroh11);
+    perceptron.updateNeuron('y2', outputNeuroh12);
+    perceptron.updateNeuron('y3', outputNeuroh13);
 }
 
 function calcNet() {
@@ -169,7 +210,7 @@ function drawNet(perceptron) {
     ctx.fillStyle   = "#FF6161";
     ctx.fillRect(575, 0, 82, 20);
     ctx.fillStyle = "white";
-    ctx.fillText('Recalculate', 580, 15);
+    ctx.fillText('Train again', 580, 15);
 
     ctx.fillStyle   = "#00AAFF";
     ctx.fillRect(695, 0, 82, 20);
@@ -214,9 +255,9 @@ function drawNet(perceptron) {
             ctx.fillRect(posX, posY, neuronSize, neuronSize);
 
             ctx.fillStyle = "#555";
-            ctx.fillText(neuron.id, neuronSize / 5 + posX, neuronSize / 1.6  + posY);
+            ctx.fillText(neuron.id, neuronSize / 8 + posX, neuronSize / 1.6  + posY);
 
-            if (rightLinksCount === 0) {
+            if (rightLinksCount === 0 && neuron.cell.getTargetOutput() !== null) {
                 ctx.fillStyle = "#333";
                 ctx.fillText('out: ' + neuron.cell.getOutput().toFixed(3), neuronSize * 1.3 + posX, neuronSize / 2.3 + posY);
                 ctx.fillStyle = "grey";
