@@ -79,7 +79,6 @@ class Perceptron
 
 			for (let index = 0; index < neurones.length; index++) {
 				let neuron = neurones[index];
-				let input = neuron.cell.input;
 				let inputSum = neuron.cell.input;
 				let leftLinks = this.getNeuronLinks(neuron, 'left');
 
@@ -89,9 +88,7 @@ class Perceptron
 
 				inputSum += neuron.bias;
 
-				neuron.cell.setInput(inputSum);
-				neuron.cell.calcOutput();
-				neuron.cell.setInput(input);
+				neuron.cell.calcOutput(inputSum);
 
 				this.updateNeuron(neuron.id, neuron);
 			}
@@ -114,11 +111,6 @@ class Perceptron
 					neuron.cell.setError(neuron.cell.getTargetOutput() - neuron.cell.getOutput());
 				} else { // если слой скрытый, то ошибка - сумма ошибок правых узлов умноженных на веса.
 					let errorsSum = 0;
-					let weightsSum = 0;
-
-					for (let j = 0; j < rightLinks.length; j++) {
-						weightsSum += rightLinks[j].weight;
-					}
 
 					for (let j = 0; j < rightLinks.length; j++) {
 						let rightNeuron = rightLinks[j].neuron;
