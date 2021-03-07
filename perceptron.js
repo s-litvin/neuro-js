@@ -5,10 +5,23 @@ class Perceptron
 		this.layers = [];
 		this.totalError = 0;
 		this.learningRate = learningRate;
+		this.resetEpoch();
+	}
+
+	getEpoch() {
+		return this.epoch;
+	}
+
+	resetEpoch() {
+		this.epoch = 0;
 	}
 
 	getNetError() {
 		return this.totalError;
+	}
+
+	getCellsWithTargetOutput() {
+		return this.cells.filter(cells => cells.cell.getTargetOutput() !== null);
 	}
 
 	addNeuron(cell, id, layer, bias = 0) {
@@ -26,7 +39,7 @@ class Perceptron
 	}
 
 	findNeuronIndexById(id) {
-		return this.cells.findIndex(cell => cell.id === id);	
+		return this.cells.findIndex(cell => cell.id === id);
 	}
 
 	getNeuronsByLayer(layer) {
@@ -52,7 +65,7 @@ class Perceptron
 		return neurons;
 	}
 
-	link(id1, id2, weight = 1) {
+	link(id1, id2, weight = Math.random()) {
 		let n1 = this.getNeuron(id1);
 		let n2 = this.getNeuron(id2);
 		n1.links.push({'id': id2, 'weight': weight, 'type': 'right'});
@@ -98,6 +111,7 @@ class Perceptron
 	calcErrors() {
 
 		this.totalError = 0;
+		this.epoch++;
 
 		for (let li = this.layers.length - 1; li >= 0; li--) {
 			let neurones = this.getNeuronsByLayer(this.layers[li]);
