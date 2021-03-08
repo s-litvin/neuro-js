@@ -197,7 +197,7 @@ function drawNet(perceptron) {
 
     ctx.font = "14px Arial";
     ctx.fillStyle   = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, 575, canvas.height);
 
     ctx.fillStyle   = "#4caf50";
     ctx.fillRect(0, 0, canvas.width, 20);
@@ -207,6 +207,7 @@ function drawNet(perceptron) {
     ctx.fillText('Learning rate: ' + perceptron.getLearningRate(), 120, 15);
     ctx.fillText('Net error: ' + perceptron.getNetError().toFixed(7), 260, 15);
     ctx.fillText('Err threshold: ' + perceptron.getErrorTrashold(), 420, 15);
+
     ctx.fillStyle   = "#FF6161";
     ctx.fillRect(575, 0, 82, 20);
     ctx.fillStyle = "white";
@@ -216,6 +217,27 @@ function drawNet(perceptron) {
     ctx.fillRect(695, 0, 82, 20);
     ctx.fillStyle = "white";
     ctx.fillText('Screenshot', 700, 15);
+
+    // graph
+    let gX = 650;
+    let gY = 350;
+    ctx.beginPath();
+    ctx.moveTo(gX, gY - 252);
+    ctx.lineTo(gX, gY + 2);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#c5e5b2';
+    ctx.moveTo(gX, gY + 2);
+    ctx.lineTo(gX + 150, gY + 2);
+    ctx.stroke();
+    let epoch = perceptron.getEpoch();
+    if (epoch > 0) {
+        ctx.fillStyle   = "#ff0000";
+        ctx.fillRect(gX + epoch, gY - Math.abs(perceptron.getNetError()) * 150, 2, 2);
+    }
+    ctx.fillStyle = "#ddd";
+    ctx.fillText('0', gX - 5, gY + 20);
+    ctx.fillText('Error', gX + 50, gY - 220);
+
 
     let neuronPositions = {};
 
