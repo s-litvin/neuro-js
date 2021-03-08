@@ -243,7 +243,11 @@ function drawNet(perceptron) {
                         ctx.moveTo(posX, posY + neuronSize / 2);
                         ctx.lineTo(neuronPositions[neuron.links[k].id][0] + neuronSize, neuronPositions[neuron.links[k].id][1] + neuronSize / 2);
                         ctx.lineWidth = neuron.links[k].weight * 2;
-                        ctx.strokeStyle = '#496cab';
+                        if (neuron.links[k].weight < 0) {
+                            ctx.strokeStyle = '#496cab';
+                        } else {
+                            ctx.strokeStyle = '#f89f9f';
+                        }
                         ctx.stroke();
                     } else {
                         rightLinksCount++;
