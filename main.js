@@ -193,6 +193,9 @@ canvas.addEventListener('click', function(evnt) {
     }
 }, false);
 
+ctx.fillStyle   = "#ffffff";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
 function drawNet(perceptron) {
 
     ctx.font = "14px Arial";
