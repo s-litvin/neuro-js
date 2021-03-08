@@ -1,6 +1,6 @@
 
 
-# Nuero-JS
+# Neuro-JS
 
 Another one native JS implementation of neural network algorithm using backpropagation learning.
 
@@ -80,7 +80,7 @@ perceptron.forwardPass();
 
 6. Backpropagation.
 ``` 
-perceptron.backPropagation()
+perceptron.backPropagation();
 ```
 
 
