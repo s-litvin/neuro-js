@@ -7,10 +7,16 @@ canvas.height = 700;
 // --(x1)--(h11)
 //       \/    \__(y1)
 //       /\    /
-// --(x1)--(h11)
+// --(x2)--(h12)
 //       \/    \__(y2)
 //       /\    /
 // --(x3)--(h13)
+//       \/    \__(y3)
+//       /\    /  /
+// --(x4)--(h14) /
+//       \/     /
+//       /\    /
+// --(x5)--(h15)
 
 let perceptron;
 
@@ -18,36 +24,12 @@ function initPerceptron() {
 
     perceptron = new Perceptron(0.98, 0.001);
 
-// Creating neurones
-    perceptron.addNeuron(new Cell(true), 'x1', 1);
-    perceptron.addNeuron(new Cell(true), 'x2', 1);
-    perceptron.addNeuron(new Cell(true), 'x3', 1);
-    perceptron.addNeuron(new Cell(true), 'x4', 1);
-    perceptron.addNeuron(new Cell(true), 'x5', 1);
+    // Creating neurones
+    perceptron.createLayers([5, 5, 5, 3]);
 
-    perceptron.addNeuron(new Cell(), 'h11', 2, 0.04);
-    perceptron.addNeuron(new Cell(), 'h12', 2, 0.03);
-    perceptron.addNeuron(new Cell(), 'h13', 2);
-    perceptron.addNeuron(new Cell(), 'h14', 2, 0.53);
-    perceptron.addNeuron(new Cell(), 'h15', 2);
-
-    perceptron.addNeuron(new Cell(), 'h21', 3, 0.14);
-    perceptron.addNeuron(new Cell(), 'h22', 3);
-    perceptron.addNeuron(new Cell(), 'h23', 3);
-    perceptron.addNeuron(new Cell(), 'h24', 3, 0.11);
-    perceptron.addNeuron(new Cell(), 'h25', 3, 0.27);
-
-    perceptron.addNeuron(new Cell(), 'y1', 4);
-    perceptron.addNeuron(new Cell(), 'y2', 4);
-    perceptron.addNeuron(new Cell(), 'y3', 4);
-
-// Linking neurones
-    perceptron.linkAll();
-
-// Set inputs and target outputs
+    // Set inputs and target outputs
     perceptron.setInputVector([0.61, 0.12, 0.45, 0.23, 0.29]);
     perceptron.setOutputVector([0.91, 0.1, 0.2]);
-
 }
 
 function calcNet() {
@@ -176,7 +158,13 @@ function drawNet(perceptron) {
                 }
             }
 
-            ctx.fillStyle = "#e3e2e5";
+            if (neuron.cell.layer === 0) {
+                ctx.fillStyle = "#f4d6bb";
+            } else if (neuron.cell.layer === perceptron.layers.length - 1) {
+                ctx.fillStyle = "#b5e8b8";
+            } else {
+                ctx.fillStyle = "#e3e2e5";
+            }
             ctx.fillRect(posX, posY, neuronSize, neuronSize);
 
             ctx.fillStyle = "#6c6c6c";

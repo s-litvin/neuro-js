@@ -39,32 +39,22 @@ Or use **index.html** from neuro-js project directory.
 perceptron = new Perceptron(0.98, 0.001);
 ```
 
-2. Add neurons to perceptron (_isInput flag, id, layer id, bias_). New layer will be created automatically if its not exists.
-```
-perceptron.addNeuron(new Cell(true), 'input1', 1);
-perceptron.addNeuron(new Cell(), 'hidden1', 2, 0.5);
-perceptron.addNeuron(new Cell(), 'hidden2', 2, 1);
-perceptron.addNeuron(new Cell(), 'output1', 3);
-```
-3. Link neurons with each other using **_linkAll()_** or **_link(id1, id2)_**.
-``` 
-perceptron.linkAll();
-```
-or for individual links:
-```
-perceptron.link('input1', 'hidden1');
-perceptron.link('input1', 'hidden2');
-perceptron.link('hidden1', 'output1');
-perceptron.link('hidden2', 'output1');
-```
+2. Add neurons using array of neurones numbers for each layer.
 
-4. Set input and target output vectors.
+createLayers(neuronesCntForEachLayer, linkAutomatically);
+```
+perceptron.createLayers([1, 2, 1], true);
+```
+_1 input neuron for 1st layer, 2 hidden neurones for 2nd layer and 1 output neuron in last 3rd layer. Neurones will be linked automatically._
+
+
+3. Set input and target output vectors.
 ```
 perceptron.setInputVector([0.61, 0.12, 0.45, 0.23, 0.29]);
 perceptron.setOutputVector([0.91, 0.1, 0.2]);
 ```
 
-Now you hawe simple perceptron:
+Now you have simple perceptron:
 ``` 
             (hidden1)
 __(input1)_/         \_(output1)__
