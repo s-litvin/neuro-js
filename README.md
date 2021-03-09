@@ -50,23 +50,18 @@ perceptron.addNeuron(new Cell(), 'output1', 3);
 ``` 
 perceptron.linkAll();
 ```
-or
+or for individual links:
 ```
 perceptron.link('input1', 'hidden1');
 perceptron.link('input1', 'hidden2');
 perceptron.link('hidden1', 'output1');
 perceptron.link('hidden2', 'output1');
 ```
-4. Set input and target output values.
-```
-let inputNeuron1 = perceptron.getNeuron('input1');
-    inputNeuron1.cell.setInput(0.61); 
 
-let outputNeuron1 = perceptron.getNeuron('output1');
-    outputNeuron1.cell.setTargetOutput(0.9);
-    
-perceptron.updateNeuron('input1', inputNeuron1);
-perceptron.updateNeuron('output1', outputNeuron1);
+4. Set input and target output vectors.
+```
+    perceptron.setInputVector([0.61, 0.12, 0.45, 0.23, 0.29]);
+    perceptron.setOutputVector([0.91, 0.1, 0.2]);
 ```
 
 Now you hawe simple perceptron:

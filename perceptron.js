@@ -95,17 +95,37 @@ class Perceptron
 	linkAll() {
 		for (let layer = 0; layer < this.layers.length - 1; layer++) {
 
-			let neuronsLeft  = this.getNeuronsByLayer(this.layers[layer]);
-			let neuronsRight = this.getNeuronsByLayer(this.layers[layer + 1]);
+			let neuronesLeft  = this.getNeuronsByLayer(this.layers[layer]);
+			let neuronesRight = this.getNeuronsByLayer(this.layers[layer + 1]);
 
-			for (let i = 0; i < neuronsLeft.length; i++) {
-				let nl = this.getNeuron(neuronsLeft[i].id);
+			for (let i = 0; i < neuronesLeft.length; i++) {
+				let nl = this.getNeuron(neuronesLeft[i].id);
 
-				for (let j = 0; j < neuronsRight.length; j++) {
-					let nr = this.getNeuron(neuronsRight[j].id);
+				for (let j = 0; j < neuronesRight.length; j++) {
+					let nr = this.getNeuron(neuronesRight[j].id);
 					this.link(nl.id, nr.id);
 				}
 			}
+		}
+	}
+
+	setInputVector(inputsArray) {
+		let firstLayerNeurones = this.getNeuronsByLayer(this.layers[0]);
+
+		for (let i = 0; i < firstLayerNeurones.length; i++) {
+			let neuron = firstLayerNeurones[i];
+			neuron.cell.setInput(inputsArray[i]);
+			this.updateNeuron(neuron.id, neuron);
+		}
+	}
+
+	setOutputVector(outputArray) {
+		let lastLayerNeurones = this.getNeuronsByLayer(this.layers[this.layers.length - 1]);
+
+		for (let i = 0; i < lastLayerNeurones.length; i++) {
+			let neuron = lastLayerNeurones[i];
+			neuron.cell.setTargetOutput(outputArray[i]);
+			this.updateNeuron(neuron.id, neuron);
 		}
 	}
 

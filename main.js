@@ -45,32 +45,9 @@ function initPerceptron() {
     perceptron.linkAll();
 
 // Set inputs and target outputs
-    let inputNeuroh11  = perceptron.getNeuron('x1');
-    let inputNeuroh12  = perceptron.getNeuron('x2');
-    let inputNeuroh14  = perceptron.getNeuron('x3');
-    let inputNeuroh15  = perceptron.getNeuron('x4');
-    let inputNeuroh13  = perceptron.getNeuron('x5');
-    let outputNeuroh11 = perceptron.getNeuron('y1');
-    let outputNeuroh12 = perceptron.getNeuron('y2');
-    let outputNeuroh13 = perceptron.getNeuron('y3');
+    perceptron.setInputVector([0.61, 0.12, 0.45, 0.23, 0.29]);
+    perceptron.setOutputVector([0.91, 0.1, 0.2]);
 
-    inputNeuroh11.cell.setInput(0.61);
-    inputNeuroh12.cell.setInput(0.12);
-    inputNeuroh13.cell.setInput(0.45);
-    inputNeuroh14.cell.setInput(0.23);
-    inputNeuroh15.cell.setInput(0.29);
-    outputNeuroh11.cell.setTargetOutput(0.9);
-    outputNeuroh12.cell.setTargetOutput(0.1);
-    outputNeuroh13.cell.setTargetOutput(0.2);
-
-    perceptron.updateNeuron('x1', inputNeuroh11);
-    perceptron.updateNeuron('x2', inputNeuroh12);
-    perceptron.updateNeuron('x3', inputNeuroh13);
-    perceptron.updateNeuron('x4', inputNeuroh14);
-    perceptron.updateNeuron('x5', inputNeuroh15);
-    perceptron.updateNeuron('y1', outputNeuroh11);
-    perceptron.updateNeuron('y2', outputNeuroh12);
-    perceptron.updateNeuron('y3', outputNeuroh13);
 }
 
 function calcNet() {
