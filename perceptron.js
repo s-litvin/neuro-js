@@ -109,6 +109,24 @@ class Perceptron
 		}
 	}
 
+	createLayers(neuronsCountArray, linkAutomatically = true) {
+		for (let layer = 0; layer < neuronsCountArray.length; layer++) {
+			for (let number = 0; number < neuronsCountArray[layer]; number++) {
+				let letter = 'h';
+				if (layer === 0) {
+					letter = 'x';
+				} else if (layer === neuronsCountArray.length - 1) {
+					letter = 'y';
+				}
+				this.addNeuron(new Cell(layer), letter + layer + number, layer);
+			}
+		}
+
+		if (linkAutomatically) {
+			this.linkAll();
+		}
+	}
+
 	setInputVector(inputsArray) {
 		let firstLayerNeurones = this.getNeuronsByLayer(this.layers[0]);
 
