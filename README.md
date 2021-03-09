@@ -41,7 +41,7 @@ perceptron = new Perceptron(0.98, 0.001);
 
 2. Add neurons using array of neurones numbers for each layer.
 
-createLayers(neuronesCntForEachLayer, linkAutomatically);
+createLayers(neuronesCountForEachLayer, linkAutomatically);
 ```
 perceptron.createLayers([2, 2, 1], true);
 ```
