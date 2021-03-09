@@ -60,8 +60,8 @@ perceptron.link('hidden2', 'output1');
 
 4. Set input and target output vectors.
 ```
-    perceptron.setInputVector([0.61, 0.12, 0.45, 0.23, 0.29]);
-    perceptron.setOutputVector([0.91, 0.1, 0.2]);
+perceptron.setInputVector([0.61, 0.12, 0.45, 0.23, 0.29]);
+perceptron.setOutputVector([0.91, 0.1, 0.2]);
 ```
 
 Now you hawe simple perceptron:
