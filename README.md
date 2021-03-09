@@ -46,7 +46,11 @@ perceptron.addNeuron(new Cell(), 'hidden1', 2, 0.5);
 perceptron.addNeuron(new Cell(), 'hidden2', 2, 1);
 perceptron.addNeuron(new Cell(), 'output1', 3);
 ```
-3. Link neurons with each other using **_link(id1, id2)_**.
+3. Link neurons with each other using **_linkAll()_** or **_link(id1, id2)_**.
+``` 
+perceptron.linkAll();
+```
+or
 ```
 perceptron.link('input1', 'hidden1');
 perceptron.link('input1', 'hidden2');

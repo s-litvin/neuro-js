@@ -92,6 +92,23 @@ class Perceptron
 		this.updateNeuron(id2, n2);
 	}
 
+	linkAll() {
+		for (let layer = 0; layer < this.layers.length - 1; layer++) {
+
+			let neuronsLeft  = this.getNeuronsByLayer(this.layers[layer]);
+			let neuronsRight = this.getNeuronsByLayer(this.layers[layer + 1]);
+
+			for (let i = 0; i < neuronsLeft.length; i++) {
+				let nl = this.getNeuron(neuronsLeft[i].id);
+
+				for (let j = 0; j < neuronsRight.length; j++) {
+					let nr = this.getNeuron(neuronsRight[j].id);
+					this.link(nl.id, nr.id);
+				}
+			}
+		}
+	}
+
 	forwardPass() {
 		
 		for (let i = 0; i < this.layers.length; i++) {
