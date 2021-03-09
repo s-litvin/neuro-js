@@ -43,23 +43,23 @@ perceptron = new Perceptron(0.98, 0.001);
 
 createLayers(neuronesCntForEachLayer, linkAutomatically);
 ```
-perceptron.createLayers([1, 2, 1], true);
+perceptron.createLayers([2, 2, 1], true);
 ```
-_1 input neuron for 1st layer, 2 hidden neurones for 2nd layer and 1 output neuron in last 3rd layer. Neurones will be linked automatically._
+_2 input neurones for 1st layer, 2 hidden neurones for 2nd layer and 1 output neuron in last 3rd layer. Neurones will be linked automatically._
 
 
 3. Set input and target output vectors.
 ```
-perceptron.setInputVector([0.61, 0.12, 0.45, 0.23, 0.29]);
-perceptron.setOutputVector([0.91, 0.1, 0.2]);
+perceptron.setInputVector([0.61, 0.12]);
+perceptron.setOutputVector([0.91]);
 ```
 
 Now you have simple perceptron:
 ``` 
-            (hidden1)
-__(input1)_/         \_(output1)__
-           \        /
-            (hidden2)
+__(input1)___(hidden1)
+           \/         \_(output1)__
+           /\         /
+__(input2)___(hidden2)
 ```
 
 5. Forward pass.
