@@ -29,10 +29,6 @@ class Perceptron
 		return this.totalError;
 	}
 
-	getCellsWithTargetOutput() {
-		return this.cells.filter(cells => cells.cell.getTargetOutput() !== null);
-	}
-
 	addNeuron(cell, id, layer, bias = 0) {
 		this.cells.push({'id': id, 'cell': cell, 'links': [], 'layer': layer + 0, 'bias': bias});
 		this.indexLayers();
