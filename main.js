@@ -20,7 +20,7 @@ canvas.height = 700;
 
 let perceptron;
 
-function initPerceptron() {
+function setup() {
 
     perceptron = new Perceptron(0.98, 0.001);
 
@@ -32,20 +32,14 @@ function initPerceptron() {
     perceptron.setOutputVector([0.91, 0.1, 0.2]);
 }
 
-function calcNet() {
+function draw() {
     // Forward pass
     perceptron.forwardPass();
 
     drawNet(perceptron);
     // Learning
     perceptron.backPropagation();
-
-    setInterval(function () { calcNet();}, 100);
 }
-
-initPerceptron();
-calcNet();
-
 
 function getMousePosition(canvas, event) {
     let rectangle = canvas.getBoundingClientRect();
