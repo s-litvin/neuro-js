@@ -171,16 +171,9 @@ function drawNet(perceptron) {
                 ctx.fillText('target: ' + neuron.cell.getTargetOutput().toFixed(3), neuronSize * 1.3 + posX, neuronSize / 1 + posY);
             }
 
-            if (leftLinksCount === 0) {
+            if (leftLinksCount === 0 && neuron.cell.isBias === false) {
                 ctx.fillStyle = "#333";
                 ctx.fillText('in: ' + neuron.cell.input.toFixed(2), neuronSize * -0.4 + posX, posY - neuronSize / 5);
-            }
-
-            if (neuron.bias !== 0) {
-                ctx.fillStyle = "#c3c";
-                ctx.font = "11px Arial";
-                ctx.fillText('b: ' + neuron.bias.toFixed(2), neuronSize * -0.1 + posX, posY - neuronSize / 5);
-                ctx.font = "14px Arial";
             }
         }
     }

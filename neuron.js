@@ -1,12 +1,13 @@
 class Cell
 {
-	constructor(layer) {
+	constructor(layer, isBias = false) {
 		this.setInput(0);
 		this.setOutput(0);
 		this.setTargetOutput(null);
 		this.error = 0;
 		this.derivative = 0;
 		this.layer = layer;
+		this.isBias = isBias;
 	}
 
 	setInput(input) {
@@ -48,7 +49,9 @@ class Cell
 	}
 
 	calcOutput(inputSum) {
-		if (this.layer === 0) {
+		if (this.isBias) {
+			this.setOutput(1);
+		} else if (this.layer === 0) {
 			this.setOutput(inputSum);
 		} else {
 			this.setOutput(1 / (1 + Math.pow(2.718, -1 * inputSum)));

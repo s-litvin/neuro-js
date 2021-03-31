@@ -29,8 +29,8 @@ class Perceptron
 		return this.totalError;
 	}
 
-	addNeuron(cell, id, layer, bias = 0) {
-		this.cells.push({'id': id, 'cell': cell, 'links': [], 'layer': layer + 0, 'bias': bias});
+	addNeuron(cell, id, layer) {
+		this.cells.push({'id': id, 'cell': cell, 'links': [], 'layer': layer + 0});
 		this.indexLayers();
 	}
 
@@ -99,6 +99,9 @@ class Perceptron
 
 				for (let j = 0; j < neuronesRight.length; j++) {
 					let nr = this.getNeuron(neuronesRight[j].id);
+					if (nr.cell.isBias) {
+						continue;
+					}
 					this.link(nl.id, nr.id);
 				}
 			}
@@ -116,6 +119,11 @@ class Perceptron
 				}
 				this.addNeuron(new Cell(layer), letter + layer + number, layer);
 			}
+
+			if (layer !== neuronsCountArray.length - 1) {
+				// Bias neuron
+				this.addNeuron(new Cell(layer, true), 'b' + layer + neuronsCountArray[layer], layer);
+			}
 		}
 
 		if (linkAutomatically) {
@@ -128,6 +136,9 @@ class Perceptron
 
 		for (let i = 0; i < firstLayerNeurones.length; i++) {
 			let neuron = firstLayerNeurones[i];
+			if (neuron.cell.isBias) {
+				continue;
+			}
 			neuron.cell.setInput(inputsArray[i]);
 			this.updateNeuron(neuron.id, neuron);
 		}
@@ -158,8 +169,6 @@ class Perceptron
 				for (let li = 0; li < leftLinks.length; li++) {
 					inputSum += leftLinks[li].neuron.cell.getOutput() * leftLinks[li].weight;
 				}
-
-				inputSum += neuron.bias;
 
 				neuron.cell.calcOutput(inputSum);
 
