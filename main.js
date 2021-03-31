@@ -152,7 +152,9 @@ function drawNet(perceptron) {
                 }
             }
 
-            if (neuron.cell.layer === 0) {
+            if (neuron.cell.isBias === true) {
+                ctx.fillStyle = "#c7ecf7";
+            } else if (neuron.cell.layer === 0) {
                 ctx.fillStyle = "#f4d6bb";
             } else if (neuron.cell.layer === perceptron.layers.length - 1) {
                 ctx.fillStyle = "#b5e8b8";
