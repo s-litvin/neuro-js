@@ -56,10 +56,10 @@ perceptron.setOutputVector([0.91]);
 
 Now you have simple perceptron:
 ``` 
-__(input1)___(hidden1)
+--(input1)----(hidden1)
            \/         \_(output1)__
            /\         /
-__(input2)___(hidden2)
+--(input2)----(hidden2)
 ```
 
 5. Forward pass.
