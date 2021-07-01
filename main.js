@@ -60,12 +60,12 @@ canvas.addEventListener('click', function(evnt) {
     if (isInside(mousePos, {x:695, y:0, width:82, height:20})) {
         let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
         window.location.href = image;
-    } else  if (isInside(mousePos, {x:575, y:0, width:82, height:20})) {
+    } else if (isInside(mousePos, {x:575, y:0, width:82, height:20})) {
         location.reload();
     }
 }, false);
 
-ctx.fillStyle   = "#ffffff";
+ctx.fillStyle = "#ffffff";
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 function drawNet(perceptron) {
