@@ -1,8 +1,8 @@
 let canvas = document.getElementById("NeuroNet");
 ctx = canvas.getContext('2d');
 
-canvas.width  = 800;
-canvas.height = 700;
+canvas.width  = 1200;
+canvas.height = 800;
 
 // --(x1)--(h11)
 //       \/    \__(y1)
@@ -25,7 +25,14 @@ function setup() {
     perceptron = new Perceptron(0.98, 0.001);
 
     // Creating neurones
-    perceptron.createLayers([5, 5, 5, 3]);
+    perceptron.createLayers(
+        [
+            {'size' : 5},
+            {'size' : 5},
+            {'size' : 5},
+            {'size' : 3},
+        ]
+    );
 
     // Set inputs and target outputs
     perceptron.setInputVector([0.61, 0.12, 0.45, 0.23, 0.29]);
@@ -70,9 +77,9 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 function drawNet(perceptron) {
 
-    ctx.font = "14px Arial";
+    ctx.font = "13px Arial";
     ctx.fillStyle   = "#ffffff";
-    ctx.fillRect(0, 0, 575, canvas.height);
+    ctx.fillRect(0, 0, 800, canvas.height);
 
     ctx.fillStyle   = "#4caf50";
     ctx.fillRect(0, 0, canvas.width, 20);
@@ -94,7 +101,7 @@ function drawNet(perceptron) {
     ctx.fillText('Screenshot', 700, 15);
 
     // graph
-    let gX = 650;
+    let gX = 850;
     let gY = 350;
     ctx.beginPath();
     ctx.moveTo(gX, gY - 252);
@@ -123,12 +130,12 @@ function drawNet(perceptron) {
         for (let j = 0; j < neurons.length; j++) {
 
             let posX = 20 + 120 * i;
-            let posY = 50 + 120 * j;
+            let posY = 50 + 60 * j;
             let neuron = neurons[j];
 
             neuronPositions[neuron.id] = [posX, posY];
 
-            let neuronSize = 30;
+            let neuronSize = 28;
 
             let rightLinksCount = 0;
             let leftLinksCount = 0;
@@ -138,7 +145,9 @@ function drawNet(perceptron) {
                         leftLinksCount++;
                         ctx.beginPath();
                         ctx.moveTo(posX, posY + neuronSize / 2);
-                        ctx.lineTo(neuronPositions[neuron.links[k].id][0] + neuronSize, neuronPositions[neuron.links[k].id][1] + neuronSize / 2);
+                        if (typeof neuronPositions[neuron.links[k].id] !== 'undefined') {
+                            ctx.lineTo(neuronPositions[neuron.links[k].id][0] + neuronSize, neuronPositions[neuron.links[k].id][1] + neuronSize / 2);
+                        }
                         ctx.lineWidth = neuron.links[k].weight * 2;
                         if (neuron.links[k].weight < 0) {
                             ctx.strokeStyle = '#496cab';
@@ -152,7 +161,9 @@ function drawNet(perceptron) {
                 }
             }
 
-            if (neuron.cell.isBias === true) {
+            if (neuron.cell.isRecurrent === true) {
+                ctx.fillStyle = "#F0C7F7";
+            } else if (neuron.cell.isBias === true) {
                 ctx.fillStyle = "#c7ecf7";
             } else if (neuron.cell.layer === 0) {
                 ctx.fillStyle = "#f4d6bb";
