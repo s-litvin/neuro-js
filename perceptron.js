@@ -51,6 +51,10 @@ class Perceptron
 		return this.cells.filter(cell => cell.layer === layer);	
 	}
 
+	getRecurrentNeurones() {
+		return this.cells.filter(cell => cell.cell.isRecurrent === true);
+	}
+
 	indexLayers() {
 		this.layers = [];
 		for (let i = 0; i < this.cells.length; i++) {
@@ -61,7 +65,7 @@ class Perceptron
 		this.layers.sort();
 	}
 
-	getNeuronLinks(neuron, linkType) {
+	getNeuronLinks(neuron, linkType = 'right') {
 		let neurons = [];
 		let links = neuron.links.filter(link => link.type === linkType);
 		for (let i = 0; i < links.length; i++) {
@@ -89,17 +93,17 @@ class Perceptron
 	}
 
 	linkAll() {
-		for (let layer = 0; layer < this.layers.length - 1; layer++) {
+		for (let layerIndex = 0; layerIndex < this.layers.length - 1; layerIndex++) {
 
-			let neuronesLeft  = this.getNeuronsByLayer(this.layers[layer]);
-			let neuronesRight = this.getNeuronsByLayer(this.layers[layer + 1]);
+			let neuronesLeft  = this.getNeuronsByLayer(this.layers[layerIndex]);
+			let neuronesRight = this.getNeuronsByLayer(this.layers[layerIndex + 1]);
 
 			for (let i = 0; i < neuronesLeft.length; i++) {
 				let nl = this.getNeuron(neuronesLeft[i].id);
 
 				for (let j = 0; j < neuronesRight.length; j++) {
 					let nr = this.getNeuron(neuronesRight[j].id);
-					if (nr.cell.isBias) {
+					if (nr.cell.isBias || nr.cell.isRecurrent) {
 						continue;
 					}
 					this.link(nl.id, nr.id);
@@ -107,19 +111,7 @@ class Perceptron
 				}
 
 			}
-
-			if (this.getNeuron(neuronesRight[0].id).cell.isRecurrent) {
-				for (let i = 0; i < neuronesRight.length; i++) {
-					for (let j = 0; j < neuronesRight.length; j++) {
-						let nri = this.getNeuron(neuronesRight[i].id);
-						let nrj = this.getNeuron(neuronesRight[j].id);
-						this.link(nrj.id, nri.id);
-					}
-				}
-			}
 		}
-
-		console.log(this);
 	}
 
 	createLayers(neuronObjectsArray, linkAutomatically = true) {
@@ -131,12 +123,26 @@ class Perceptron
 				} else if (layer === neuronObjectsArray.length - 1) {
 					letter = 'y';
 				}
-				this.addNeuron(new Cell(layer, false, neuronObjectsArray[layer].type === 'recurrent'), letter + layer + number, layer);
+				this.addNeuron(new Cell(layer), letter + layer + number, layer);
 			}
 
 			if (layer !== neuronObjectsArray.length - 1) {
 				// Bias neuron
 				this.addNeuron(new Cell(layer, true), 'b' + layer + neuronObjectsArray[layer].size, layer);
+			}
+
+			// adding recurent neurones on previous layer
+			if (neuronObjectsArray[layer].type === 'recurrent' && layer > 0) {
+				for (let number = 0; number < neuronObjectsArray[layer].size; number++) {
+					let letter = 'h';
+					if (layer === 0) {
+						letter = 'x';
+					} else if (layer === neuronObjectsArray.length - 1) {
+						letter = 'y';
+					}
+					letter = 'r' + letter;
+					this.addNeuron(new Cell(layer - 1, false, true), letter + layer + number, layer - 1);
+				}
 			}
 		}
 
@@ -158,6 +164,17 @@ class Perceptron
 		}
 	}
 
+	setRecurrentInputs() {
+		let recurrentNeurones = this.getRecurrentNeurones('recurrent');
+		for (let i = 0; i < recurrentNeurones.length; i++) {
+			let neuron = recurrentNeurones[i];
+			let neuronLinks = this.getNeuronLinks(neuron);
+			let parentNeuron = this.getNeuron(neuronLinks[i].neuron.id);
+			neuron.cell.setInput(parentNeuron.cell.getOutput());
+			this.updateNeuron(neuron.id, neuron);
+		}
+	}
+
 	setOutputVector(outputArray) {
 		let lastLayerNeurones = this.getNeuronsByLayer(this.layers[this.layers.length - 1]);
 
@@ -169,6 +186,8 @@ class Perceptron
 	}
 
 	forwardPass() {
+
+		this.setRecurrentInputs();
 		
 		for (let i = 0; i < this.layers.length; i++) {
 
