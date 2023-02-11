@@ -1,6 +1,6 @@
 class Cell
 {
-	constructor(layer, isBias = false) {
+	constructor(layer, isBias = false, isRecurrent = false) {
 		this.setInput(0);
 		this.setOutput(0);
 		this.setTargetOutput(null);
@@ -8,6 +8,7 @@ class Cell
 		this.derivative = 0;
 		this.layer = layer;
 		this.isBias = isBias;
+		this.isRecurrent = isRecurrent;
 	}
 
 	setInput(input) {

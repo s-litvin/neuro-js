@@ -43,8 +43,15 @@ perceptron = new Perceptron(0.98, 0.001);
 
 createLayers(neuronesCountForEachLayer, linkAutomatically);
 ```
-perceptron.createLayers([2, 2, 1], true);
+perceptron.createLayers([{'size': 2}, {'size': 2}, {'size': 1}], true);
 ```
+
+you can add recurrent layer, by adding type 'recurrent':
+```
+perceptron.createLayers([{'size': 2}, {'size': 2, 'type': recurrent}, {'size': 1}], true);
+```
+
+
 _2 input neurones for 1st layer, 2 hidden neurones for 2nd layer and 1 output neuron in last 3rd layer. Neurones will be linked automatically._
 
 

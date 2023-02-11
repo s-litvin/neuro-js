@@ -103,26 +103,40 @@ class Perceptron
 						continue;
 					}
 					this.link(nl.id, nr.id);
+
+				}
+
+			}
+
+			if (this.getNeuron(neuronesRight[0].id).cell.isRecurrent) {
+				for (let i = 0; i < neuronesRight.length; i++) {
+					for (let j = 0; j < neuronesRight.length; j++) {
+						let nri = this.getNeuron(neuronesRight[i].id);
+						let nrj = this.getNeuron(neuronesRight[j].id);
+						this.link(nrj.id, nri.id);
+					}
 				}
 			}
 		}
+
+		console.log(this);
 	}
 
-	createLayers(neuronsCountArray, linkAutomatically = true) {
-		for (let layer = 0; layer < neuronsCountArray.length; layer++) {
-			for (let number = 0; number < neuronsCountArray[layer]; number++) {
+	createLayers(neuronObjectsArray, linkAutomatically = true) {
+		for (let layer = 0; layer < neuronObjectsArray.length; layer++) {
+			for (let number = 0; number < neuronObjectsArray[layer].size; number++) {
 				let letter = 'h';
 				if (layer === 0) {
 					letter = 'x';
-				} else if (layer === neuronsCountArray.length - 1) {
+				} else if (layer === neuronObjectsArray.length - 1) {
 					letter = 'y';
 				}
-				this.addNeuron(new Cell(layer), letter + layer + number, layer);
+				this.addNeuron(new Cell(layer, false, neuronObjectsArray[layer].type === 'recurrent'), letter + layer + number, layer);
 			}
 
-			if (layer !== neuronsCountArray.length - 1) {
+			if (layer !== neuronObjectsArray.length - 1) {
 				// Bias neuron
-				this.addNeuron(new Cell(layer, true), 'b' + layer + neuronsCountArray[layer], layer);
+				this.addNeuron(new Cell(layer, true), 'b' + layer + neuronObjectsArray[layer].size, layer);
 			}
 		}
 
