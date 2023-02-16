@@ -123,7 +123,7 @@ class Perceptron
 				} else if (layer === neuronObjectsArray.length - 1) {
 					letter = 'y';
 				}
-				this.addNeuron(new Cell(layer), letter + layer + number, layer);
+				this.addNeuron(new Cell(layer, false, false, neuronObjectsArray.activation ?? Cell.SIGMOID), letter + layer + number, layer);
 			}
 
 			if (layer !== neuronObjectsArray.length - 1) {
@@ -141,7 +141,7 @@ class Perceptron
 						letter = 'y';
 					}
 					letter = 'r' + letter;
-					this.addNeuron(new Cell(layer - 1, false, true), letter + layer + number, layer - 1);
+					this.addNeuron(new Cell(layer - 1, false, true, neuronObjectsArray.activation ?? Cell.SIGMOID), letter + layer + number, layer - 1);
 				}
 			}
 		}
