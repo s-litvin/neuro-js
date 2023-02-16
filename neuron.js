@@ -14,7 +14,7 @@ class Cell
 		this.layer = layer;
 		this.isBias = isBias;
 		this.isRecurrent = isRecurrent;
-		this.activation = activation;
+		this.activation = [Cell.RELU, Cell.LEAKYRELU, Cell.SIGMOID, Cell.TANH].includes(activation) ? activation : Cell.SIGMOID;
 	}
 
 	setInput(input) {
