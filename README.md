@@ -46,6 +46,11 @@ createLayers(neuronesCountForEachLayer, linkAutomatically);
 perceptron.createLayers([{'size': 2}, {'size': 2}, {'size': 1}], true);
 ```
 
+activation function ('sigmoid' by default, 'relu', 'leakyrelu', 'tanh'):
+```
+perceptron.createLayers([{'size': 2}, {'size': 2, 'activation': 'relu'}, {'size': 1}], true);
+```
+
 you can add recurrent layer, by adding type 'recurrent':
 ```
 perceptron.createLayers([{'size': 2}, {'size': 2, 'type': recurrent}, {'size': 1}], true);
