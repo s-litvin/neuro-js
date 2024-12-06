@@ -4,6 +4,7 @@ class Cell
 	static LEAKYRELU = 'leakyrelu';
 	static SIGMOID = 'sigmoid';
 	static TANH = 'tanh';
+	static LINEAR = 'linear';
 
 	constructor(layer, isBias = false, isRecurrent = false, activation = Cell.SIGMOID) {
 		this.setInput(0);
@@ -14,7 +15,7 @@ class Cell
 		this.layer = layer;
 		this.isBias = isBias;
 		this.isRecurrent = isRecurrent;
-		this.activation = [Cell.RELU, Cell.LEAKYRELU, Cell.SIGMOID, Cell.TANH].includes(activation) ? activation : Cell.SIGMOID;
+		this.activation = [Cell.RELU, Cell.LEAKYRELU, Cell.SIGMOID, Cell.TANH, Cell.LINEAR].includes(activation) ? activation : Cell.SIGMOID;
 	}
 
 	setInput(input) {
@@ -76,7 +77,10 @@ class Cell
 			case Cell.LEAKYRELU:
 				return inputSum < 0 ? 0.1 * inputSum : inputSum;
 			case Cell.TANH:
-				return (Math.pow(2.718, inputSum) - Math.pow(2.718, -1 * inputSum)) / (Math.pow(2.718, inputSum) + Math.pow(2.718, -1 * inputSum));
+				return (Math.pow(2.718, inputSum) - Math.pow(2.718, -1 * inputSum)) /
+					(Math.pow(2.718, inputSum) + Math.pow(2.718, -1 * inputSum));
+			case Cell.LINEAR:
+				return inputSum;
 			case Cell.SIGMOID:
 			default:
 				return 1 / (1 + Math.pow(2.718, -1 * inputSum));
@@ -86,14 +90,18 @@ class Cell
 	calcDerivative() {
 		switch (this.activation) {
 			case Cell.RELU:
+				return this.getOutput() > 0 ? 1 : 0;
 			case Cell.LEAKYRELU:
-				return this.getOutput() < 0 ? 0 : 1;
+				return this.getOutput() > 0 ? 1 : 0.1;
 			case Cell.TANH:
 				return 1 - Math.pow(this.getOutput(), 2);
+			case Cell.LINEAR:
+				return 1;
 			case Cell.SIGMOID:
 			default:
 				return this.getOutput() * (1 - this.getOutput());
 		}
 	}
+
 
 }
