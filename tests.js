@@ -21,6 +21,7 @@ function runTests() {
         logResult("Test 5: ForwardPass. RELU", testForwardPassRELU());
         logResult("Test 6: ForwardPass. LEAKYRELU", testForwardPassLeakyRELU());
         logResult("Test 7: ForwardPass. TANH", testForwardPassTanh());
+        logResult("Test 8: Backpropagation", testBackPropagationComplex());
     } catch (error) {
         console.error(error);
         const resultContainer = document.getElementById("test-results");
@@ -207,5 +208,44 @@ function tanh(x) {
     return (Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x));
 }
 
+function testBackPropagationComplex() {
+    const perceptron = new Perceptron(0.1, 0.001);
+
+    perceptron.createLayers([
+        { size: 3, activation: Cell.SIGMOID },
+        { size: 2, activation: Cell.SIGMOID },
+        { size: 1, activation: Cell.LINEAR }
+    ], false);
+
+    perceptron.link('x00', 'h10', 0.1);
+    perceptron.link('x00', 'h11', -0.2);
+    perceptron.link('x01', 'h10', 0.4);
+    perceptron.link('x01', 'h11', 0.3);
+    perceptron.link('x02', 'h10', -0.5);
+    perceptron.link('x02', 'h11', 0.6);
+
+    perceptron.link('h10', 'y20', 0.7);
+    perceptron.link('h11', 'y20', -0.1);
+
+    perceptron.setInputVector([1.0, 0.5, 0.2]);
+    perceptron.setOutputVector([0.8]);
+
+    perceptron.forwardPass();
+    perceptron.backPropagation();
+
+    const weights = perceptron.getWeights();
+
+    assert(
+        Math.abs(weights[1][0].weights[0].weight - 0.7257) < 0.0001,
+        `Expected weight h10->y20 to be 0.7257, got ${weights[1][0].weights[0].weight}`
+    );
+
+    assert(
+        Math.abs(weights[1][1].weights[0].weight - -0.0759) < 0.0001,
+        `Expected weight h11->y20 to be -0.0759, got ${weights[1][1].weights[0].weight}`
+    );
+
+    return true;
+}
 
 window.onload = runTests;
