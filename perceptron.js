@@ -123,7 +123,7 @@ class Perceptron
 				} else if (layer === neuronObjectsArray.length - 1) {
 					letter = 'y';
 				}
-				this.addNeuron(new Cell(layer, false, false, neuronObjectsArray.activation ?? Cell.SIGMOID), letter + layer + number, layer);
+				this.addNeuron(new Cell(layer, false, false, neuronObjectsArray[layer].activation ?? Cell.SIGMOID), letter + layer + number, layer);
 			}
 
 			if (layer !== neuronObjectsArray.length - 1) {
@@ -183,6 +183,46 @@ class Perceptron
 			neuron.cell.setTargetOutput(outputArray[i]);
 			this.updateNeuron(neuron.id, neuron);
 		}
+	}
+
+	getOutputVector() {
+		let lastLayerNeurons = this.getNeuronsByLayer(this.layers[this.layers.length - 1]);
+
+		let outputVector = [];
+		for (let i = 0; i < lastLayerNeurons.length; i++) {
+			let neuron = lastLayerNeurons[i];
+			outputVector.push(neuron.cell.getOutput());
+		}
+
+		return outputVector;
+	}
+
+	getWeights() {
+		const weights = [];
+
+		for (let layerIndex = 0; layerIndex < this.layers.length - 1; layerIndex++) {
+			const layerWeights = [];
+			const neurons = this.getNeuronsByLayer(this.layers[layerIndex]);
+
+			for (const neuron of neurons) {
+				if (neuron.cell.isBias) continue;
+
+				const links = this.getNeuronLinks(neuron, 'right');
+				const neuronWeights = links.map(link => ({
+					targetNeuron: link.neuron.id,
+					weight: link.weight,
+				}));
+
+				layerWeights.push({
+					neuronId: neuron.id,
+					weights: neuronWeights,
+				});
+			}
+
+			weights.push(layerWeights);
+		}
+
+		return weights;
 	}
 
 	forwardPass() {
