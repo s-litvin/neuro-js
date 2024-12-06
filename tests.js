@@ -22,6 +22,7 @@ function runTests() {
         logResult("Test 6: ForwardPass. LEAKYRELU", testForwardPassLeakyRELU());
         logResult("Test 7: ForwardPass. TANH", testForwardPassTanh());
         logResult("Test 8: Backpropagation", testBackPropagationComplex());
+        logResult("Test 9: Benchmark", testMultiInputOutputBenchmark());
     } catch (error) {
         console.error(error);
         const resultContainer = document.getElementById("test-results");
@@ -247,5 +248,76 @@ function testBackPropagationComplex() {
 
     return true;
 }
+
+function testMultiInputOutputBenchmark() {
+    console.log("Starting benchmark test with 5 inputs and 3 outputs...");
+
+    // 1. Создание тренировочных данных
+    const trainingData = [
+        { inputs: [0.1, 0.2, 0.3, 0.4, 0.5], outputs: [0.14, 0.26, 0.35] },
+        { inputs: [0.5, 0.4, 0.3, 0.2, 0.1], outputs: [0.33, 0.29, 0.07] },
+        { inputs: [0.9, 0.8, 0.7, 0.6, 0.5], outputs: [0.58, 0.64, 0.35] },
+        { inputs: [0.3, 0.1, 0.4, 0.7, 0.2], outputs: [0.11, 0.33, 0.14] },
+        { inputs: [0.7, 0.6, 0.5, 0.4, 0.3], outputs: [0.41, 0.46, 0.21] }
+    ];
+
+    // 2. Настройка сети
+    const perceptron = new Perceptron(0.1, 0.00001);
+    perceptron.createLayers([
+        { size: 5, activation: Cell.SIGMOID },  // Входной слой
+        { size: 9, activation: Cell.SIGMOID },  // Скрытый слой
+        { size: 3, activation: Cell.LINEAR }    // Выходной слой
+    ]);
+
+    // 3. Обучение сети
+    console.log("Training...");
+    const epochs = 1400;
+    for (let epoch = 0; epoch < epochs; epoch++) {
+        for (let data of trainingData) {
+            perceptron.setInputVector(data.inputs);
+            perceptron.setOutputVector(data.outputs);
+            perceptron.forwardPass();
+            perceptron.backPropagation();
+        }
+
+        if (epoch % 100 === 0 || epoch === epochs - 1) {
+            console.log(`Epoch: ${epoch}, Net Error: ${perceptron.getNetError().toFixed(7)}`);
+        }
+    }
+
+    // 4. Тестирование сети
+    console.log("\nTesting...");
+    let allPassed = true;
+    for (let data of trainingData) {
+        perceptron.setInputVector(data.inputs);
+        perceptron.forwardPass();
+        const outputs = perceptron.getOutputVector();
+
+        console.log(`Input: ${data.inputs}`);
+        console.log(`Output: ${outputs.map(o => o.toFixed(3))}`);
+        console.log(`Expected: ${data.outputs}`);
+
+        // Проверка точности
+        const isCloseEnough = outputs.every((output, index) =>
+            Math.abs(output - data.outputs[index]) < 0.05
+        );
+
+        if (!isCloseEnough) {
+            allPassed = false;
+            console.warn(`Test failed for input: ${data.inputs}`);
+        } else {
+            console.info(`Test successful for input: ${data.inputs}`);
+        }
+    }
+
+    if (allPassed) {
+        console.log("All tests passed!");
+        return true;
+    } else {
+        console.error("Some tests failed.");
+        return false;
+    }
+}
+
 
 window.onload = runTests;
