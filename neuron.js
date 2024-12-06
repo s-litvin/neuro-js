@@ -76,7 +76,7 @@ class Cell
 			case Cell.LEAKYRELU:
 				return inputSum < 0 ? 0.1 * inputSum : inputSum;
 			case Cell.TANH:
-				return (Math.pow(2.718, input) - Math.pow(2.718, -1 * inputSum)) / (Math.pow(2.718, input) + Math.pow(2.718, -1 * inputSum));
+				return (Math.pow(2.718, inputSum) - Math.pow(2.718, -1 * inputSum)) / (Math.pow(2.718, inputSum) + Math.pow(2.718, -1 * inputSum));
 			case Cell.SIGMOID:
 			default:
 				return 1 / (1 + Math.pow(2.718, -1 * inputSum));
