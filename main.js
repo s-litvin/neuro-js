@@ -16,6 +16,8 @@ const EPOCH_BAR_HEIGHT = 20;
 const BUTTONS = [
     { x: 575, y: 0, width: 82, height: 20, color: "#FF6161", text: "Train again" },
     { x: 695, y: 0, width: 82, height: 20, color: "#00AAFF", text: "Screenshot" },
+    { x: 820, y: 0, width: 40, height: 20, color: "#555500", text: "LR +" },
+    { x: 870, y: 0, width: 40, height: 20, color: "#FF9800", text: "LR -" },
 ];
 
 
@@ -26,6 +28,7 @@ canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
 
 let perceptron;
+let learningRate = 0.5;
 const epochs = 1500;
 let epoch = 0;
 let dataIndex = 0;
@@ -39,8 +42,12 @@ const trainingData = [
 ];
 let errors = new Array(trainingData.length).fill(0);
 
-function setup() {
-    perceptron = new Perceptron(0.5, 0.00001);
+function restart() {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    epoch = 0;
+    perceptron = new Perceptron(learningRate, 0.00001);
 
     perceptron.createLayers([
         { size: 5, activation: Cell.SIGMOID },
@@ -50,6 +57,10 @@ function setup() {
 
     perceptron.setInputVector(trainingData[0].inputs);
     perceptron.setOutputVector(trainingData[0].outputs);
+}
+
+function setup() {
+    restart();
 }
 
 function draw() {
@@ -76,18 +87,32 @@ function isInside(pos, rect) {
     );
 }
 
-canvas.addEventListener('click', function (event) {
+canvas.addEventListener("click", function (event) {
     const mousePos = getMousePosition(canvas, event);
 
-    if (isInside(mousePos, BUTTONS[0])) {
-        location.reload(); // Train again
-    } else if (isInside(mousePos, BUTTONS[1])) {
-        const image = canvas
-            .toDataURL("image/png")
-            .replace("image/png", "image/octet-stream");
-        window.location.href = image; // Screenshot
-    }
-}, false);
+    BUTTONS.forEach((button) => {
+        if (isInside(mousePos, button)) {
+            switch (button.text) {
+                case "Train again":
+                    restart(); // restart
+                    break;
+                case "Screenshot":
+                    const image = canvas
+                        .toDataURL("image/png")
+                        .replace("image/png", "image/octet-stream");
+                    window.location.href = image; // Save screenshot
+                    break;
+                case "LR +":
+                    adjustLearningRate(0.05); // Learning rate increase
+                    break;
+                case "LR -":
+                    adjustLearningRate(-0.05); // Learning rate decrease
+                    break;
+            }
+        }
+    });
+});
+
 
 function getMousePosition(canvas, event) {
     let rectangle = canvas.getBoundingClientRect();
@@ -163,14 +188,13 @@ function drawButtons() {
 
 function drawBackground() {
 
-
     ctx.fillStyle = "#4caf50";
     ctx.fillRect(0, 0, CANVAS_WIDTH, EPOCH_BAR_HEIGHT);
 
     ctx.fillStyle = "white";
     ctx.fillText(`Epoch: ${perceptron.getEpoch()}`, 20, 15);
-    ctx.fillText(`Learning rate: ${perceptron.getLearningRate()}`, 120, 15);
-    ctx.fillText(`Net error: ${perceptron.getNetError().toFixed(7)}`, 260, 15);
+    ctx.fillText(`Learning rate: ${perceptron.getLearningRate().toFixed(2)}`, 120, 15); // Отображаем изменённое значение
+    ctx.fillText(`Net error: ${perceptron.getNetError().toFixed(4)}`, 260, 15);
     ctx.fillText(`Err threshold: ${perceptron.getErrorTrashold()}`, 420, 15);
 
     drawButtons();
@@ -247,7 +271,6 @@ function drawNeuronData(neuron, x, y) {
         ctx.fillText(`in: ${neuron.cell.input.toFixed(2)}`, x - textOffsetX + 20, y + NEURON_SIZE / 2 - 20);
     }
 
-    // Если это выходной нейрон, отображаем целевое значение
     if (neuron.cell.getTargetOutput !== null && neuron.cell.layer === perceptron.layers.length - 1) {
         ctx.fillText(`out: ${neuron.cell.getOutput().toFixed(3)}`, x + textOffsetX, y + NEURON_SIZE / 3);
         ctx.fillStyle = "grey";
@@ -281,4 +304,10 @@ function getNeuronColor(neuron) {
     if (neuron.cell.layer === 0) return "#f4d6bb";
     if (neuron.cell.layer === perceptron.layers.length - 1) return "#b5e8b8";
     return "#e3e2e5";
+}
+
+function adjustLearningRate(delta) {
+    learningRate = perceptron.getLearningRate() + delta;
+    learningRate = Math.max(0.00001, Math.min(learningRate, 1)); // limit LR in range [0.00001, 1]
+    perceptron.setLearningRate(learningRate);
 }

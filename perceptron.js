@@ -9,6 +9,10 @@ class Perceptron
 		this.resetEpoch();
 	}
 
+	setLearningRate(learningRate) {
+		this.learningRate = learningRate;
+	}
+
 	getLearningRate() {
 		return this.learningRate;
 	}
