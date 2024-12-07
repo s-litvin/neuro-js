@@ -50,7 +50,7 @@ function restart() {
     perceptron = new Perceptron(learningRate, 0.00001);
 
     perceptron.createLayers([
-        { size: 5, activation: Cell.SIGMOID },
+        { size: 5, activation: Cell.LINEAR },
         { size: 4, activation: Cell.SIGMOID },
         { size: 3, activation: Cell.LINEAR },
     ]);
@@ -193,7 +193,7 @@ function drawBackground() {
 
     ctx.fillStyle = "white";
     ctx.fillText(`Epoch: ${perceptron.getEpoch()}`, 20, 15);
-    ctx.fillText(`Learning rate: ${perceptron.getLearningRate().toFixed(2)}`, 120, 15); // Отображаем изменённое значение
+    ctx.fillText(`Learning rate: ${perceptron.getLearningRate().toFixed(2)}`, 120, 15);
     ctx.fillText(`Net error: ${perceptron.getNetError().toFixed(4)}`, 260, 15);
     ctx.fillText(`Err threshold: ${perceptron.getErrorTrashold()}`, 420, 15);
 
@@ -215,7 +215,7 @@ function drawGraph(perceptron, color) {
         ctx.fillStyle = color;
         ctx.fillRect(
             GRAPH_X + (currentEpoch / epochs) * GRAPH_WIDTH,
-            GRAPH_Y - Math.abs(perceptron.getNetError()) * 150,
+            GRAPH_Y - Math.abs(perceptron.getNetError()) * 650,
             1,
             1
         );
@@ -247,15 +247,14 @@ function drawNeuralNetwork(perceptron) {
 function drawNeuron(neuron, x, y, neuronPositions) {
     drawNeuronLinks(neuron, x, y, neuronPositions);
 
-    const radius = NEURON_SIZE / 2; // Радиус круга
+    const radius = NEURON_SIZE / 2;
 
-    // Рисуем круг (вместо квадрата)
     ctx.beginPath();
-    ctx.arc(x + radius, y + radius, radius, 0, 2 * Math.PI); // Центр круга и радиус
+    ctx.arc(x + radius, y + radius, radius, 0, 2 * Math.PI); // center of the circle and radius
     ctx.fillStyle = getNeuronColor(neuron);
     ctx.fill();
 
-    // Добавляем подпись ID нейрона
+    // neuron label
     ctx.fillStyle = "#6c6c6c";
     ctx.fillText(neuron.id, x + radius / 2 - 3, y + radius + 5);
 
