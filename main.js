@@ -19,33 +19,57 @@ canvas.height = 800;
 // --(x5)--(h15)
 
 let perceptron;
+const epochs = 1400;
+let epoch =0;
+let dataIndex = 0;
+
+const trainingData = [
+    { inputs: [0.1, 0.2, 0.3, 0.4, 0.5], outputs: [0.14, 0.26, 0.35] },
+    { inputs: [0.5, 0.4, 0.3, 0.2, 0.1], outputs: [0.33, 0.29, 0.07] },
+    { inputs: [0.9, 0.8, 0.7, 0.6, 0.5], outputs: [0.58, 0.64, 0.35] },
+    { inputs: [0.3, 0.1, 0.4, 0.7, 0.2], outputs: [0.11, 0.33, 0.14] },
+    { inputs: [0.7, 0.6, 0.5, 0.4, 0.3], outputs: [0.41, 0.46, 0.21] }
+];
 
 function setup() {
 
-    perceptron = new Perceptron(0.98, 0.001);
+    perceptron = new Perceptron(0.5, 0.00001);
 
     // Creating neurones
     perceptron.createLayers(
         [
-            {'size' : 5},
-            {'size' : 5},
-            {'size' : 5},
-            {'size' : 3},
+            {'size' : 5, 'activation': Cell.SIGMOID},
+            {'size' : 4, 'activation': Cell.SIGMOID},
+            {'size' : 3, 'activation': Cell.LINEAR},
         ]
     );
 
     // Set inputs and target outputs
-    perceptron.setInputVector([0.61, 0.12, 0.45, 0.23, 0.29]);
-    perceptron.setOutputVector([0.91, 0.1, 0.2]);
+    perceptron.setInputVector(trainingData[0].inputs);
+    perceptron.setOutputVector(trainingData[0].outputs);
 }
 
 function draw() {
-    // Forward pass
-    perceptron.forwardPass();
 
-    drawNet(perceptron);
-    // Learning
-    perceptron.backPropagation();
+    if (epoch < epochs) {
+        const data = trainingData[dataIndex];
+
+        // LEARNING
+        perceptron.setInputVector(data.inputs);
+        perceptron.setOutputVector(data.outputs);
+
+        perceptron.forwardPass();
+        perceptron.backPropagation();
+
+        epoch++;
+        dataIndex = (dataIndex + 1) % trainingData.length;
+    } else {
+        // TESTING
+        perceptron.forwardPass();
+    }
+
+    const color = getColorByIndex(dataIndex, trainingData.length);
+    drawNet(perceptron, color);
 }
 
 function getMousePosition(canvas, event) {
@@ -75,7 +99,12 @@ canvas.addEventListener('click', function(evnt) {
 ctx.fillStyle = "#ffffff";
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-function drawNet(perceptron) {
+function getColorByIndex(index, totalIndices) {
+    const hue = (index / totalIndices) * 360;
+    return `hsl(${hue}, 100%, 50%)`;
+}
+
+function drawNet(perceptron, datasetColor) {
 
     ctx.font = "13px Arial";
     ctx.fillStyle   = "#ffffff";
@@ -101,24 +130,27 @@ function drawNet(perceptron) {
     ctx.fillText('Screenshot', 700, 15);
 
     // graph
-    let gX = 850;
-    let gY = 350;
+    let gX = 820;
+    let gY = 272;
+    const errorGraphSizeX = 350;
     ctx.beginPath();
     ctx.moveTo(gX, gY - 252);
     ctx.lineTo(gX, gY + 2);
     ctx.lineWidth = 2;
     ctx.strokeStyle = '#c5e5b2';
     ctx.moveTo(gX, gY + 2);
-    ctx.lineTo(gX + 150, gY + 2);
+    ctx.lineTo(gX + errorGraphSizeX, gY + 2);
     ctx.stroke();
     let epoch = perceptron.getEpoch();
     if (epoch > 0) {
-        ctx.fillStyle   = "#ff0000";
-        ctx.fillRect(gX + epoch, gY - Math.abs(perceptron.getNetError()) * 150, 2, 2);
+        ctx.fillStyle   = datasetColor;
+        ctx.fillRect(gX + (epoch / epochs) * errorGraphSizeX, gY - Math.abs(perceptron.getNetError()) * 150, 1, 1);
     }
     ctx.fillStyle = "#ddd";
     ctx.fillText('0', gX - 5, gY + 20);
-    ctx.fillText('Error', gX + 50, gY - 220);
+    ctx.fillText('epochs', gX + errorGraphSizeX/2, gY + 30);
+    ctx.fillText(epochs, gX + errorGraphSizeX, gY + 20);
+    ctx.fillText('Error', gX - 40, gY - 220);
 
 
     let neuronPositions = {};
@@ -148,7 +180,7 @@ function drawNet(perceptron) {
                         if (typeof neuronPositions[neuron.links[k].id] !== 'undefined') {
                             ctx.lineTo(neuronPositions[neuron.links[k].id][0] + neuronSize, neuronPositions[neuron.links[k].id][1] + neuronSize / 2);
                         }
-                        ctx.lineWidth = neuron.links[k].weight * 2;
+                        ctx.lineWidth = Math.min(neuron.links[k].weight * 2, 5);
                         if (neuron.links[k].weight < 0) {
                             ctx.strokeStyle = '#496cab';
                         } else {
