@@ -165,7 +165,7 @@ function drawNet(perceptron, datasetColor) {
     let gX = 820;
     let gY = 272;
     ctx.fillStyle = "#fff";
-    ctx.fillRect(0, gY+30, canvas.width, canvas.height);
+    ctx.fillRect(0, gY+10, canvas.width, canvas.height);
     const errorGraphSizeX = 350;
     ctx.beginPath();
     ctx.moveTo(gX, gY - 252);
