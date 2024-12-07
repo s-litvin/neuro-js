@@ -202,6 +202,7 @@ function drawBackground() {
 
 function drawGraph(perceptron, color) {
     ctx.strokeStyle = "#c5e5b2";
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(GRAPH_X, GRAPH_Y - GRAPH_HEIGHT);
     ctx.lineTo(GRAPH_X, GRAPH_Y);
