@@ -60,8 +60,6 @@ class Cell
 	calcOutput(inputSum) {
 		if (this.isBias) {
 			this.setOutput(1);
-		} else if (this.layer === 0) {
-			this.setOutput(inputSum);
 		} else {
 			this.setOutput(this.calcActivation(inputSum));
 		}

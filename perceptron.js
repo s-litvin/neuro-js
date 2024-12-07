@@ -267,9 +267,10 @@ class Perceptron
 
 				let rightLinks = this.getNeuronLinks(neuron, 'right');
 
-				if (rightLinks.length === 0) { // если это последний слой, то ошибка вычисляется разницей ожидания и выхода
+
+				if (rightLinks.length === 0) { // for last layer error is the difference between expected output and input
 					neuron.cell.setError(neuron.cell.getTargetOutput() - neuron.cell.getOutput());
-				} else { // если слой скрытый, то ошибка - сумма ошибок правых узлов умноженных на веса.
+				} else { // if the layer is hidden, then the error is the sum of the errors of the right nodes multiplied by the weights.
 					let errorsSum = 0;
 
 					for (let j = 0; j < rightLinks.length; j++) {
@@ -283,7 +284,8 @@ class Perceptron
 				this.updateNeuron(neuron.id, neuron);
 
 				if (li === this.layers.length - 1) {
-					this.totalError += neuron.cell.getError();
+					// this.totalError += neuron.cell.getError();
+					this.totalError += 0.5 * Math.pow(neuron.cell.getTargetOutput() - neuron.cell.getOutput(), 2);
 				}
 			}
 		}
