@@ -2,8 +2,15 @@
 
 # Neuro-JS
 
-Another one native JS implementation of neural network algorithm using backpropagation learning.
+Neuro-JS is a lightweight JavaScript library for creating and training neural networks using backpropagation. It is designed for simplicity and flexibility, making it easy to experiment with different network configurations directly in the browser.
 
+## Features
+
+Layered Neural Networks: Fully customizable multilayer perceptrons.
+Built-in Activation Functions: Includes sigmoid, ReLU, leaky ReLU, tanh, and linear functions.
+Customizable Training: Adjustable learning rate and error thresholds.
+Browser-Friendly: Pure JavaScript implementation, no external dependencies.
+Manual and Automatic Weight Initialization: Supports user-defined weights or auto-initialization.
 
 ## Getting Started
 
