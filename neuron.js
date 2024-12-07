@@ -5,6 +5,7 @@ class Cell
 	static SIGMOID = 'sigmoid';
 	static TANH = 'tanh';
 	static LINEAR = 'linear';
+	static TYPE_RECURRENT = 'recurrent';
 
 	constructor(layer, isBias = false, isRecurrent = false, activation = Cell.SIGMOID) {
 		this.setInput(0);

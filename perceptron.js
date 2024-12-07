@@ -136,7 +136,7 @@ class Perceptron
 			}
 
 			// adding recurent neurones on previous layer
-			if (neuronObjectsArray[layer].type === 'recurrent' && layer > 0) {
+			if (neuronObjectsArray[layer].type === Cell.TYPE_RECURRENT && layer > 0) {
 				for (let number = 0; number < neuronObjectsArray[layer].size; number++) {
 					let letter = 'h';
 					if (layer === 0) {
@@ -169,7 +169,7 @@ class Perceptron
 	}
 
 	setRecurrentInputs() {
-		let recurrentNeurones = this.getRecurrentNeurones('recurrent');
+		let recurrentNeurones = this.getRecurrentNeurones(Cell.TYPE_RECURRENT);
 		for (let i = 0; i < recurrentNeurones.length; i++) {
 			let neuron = recurrentNeurones[i];
 			let neuronLinks = this.getNeuronLinks(neuron);
