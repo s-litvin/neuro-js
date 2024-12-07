@@ -7,9 +7,72 @@
     <script src="neuron.js"></script>
     <script src="perceptron.js"></script>
     <script src="tests.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            padding: 20px;
+        }
+        #test-results, #log-container {
+            flex: 1; /* Both panels take equal space */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        #test-results {
+            background-color: #f9f9f9;
+        }
+        #log-container {
+            background-color: #eef;
+            height: 400px;
+            overflow-y: auto;
+        }
+        .log-message {
+            font-size: 14px;
+        }
+        .log-message.error {
+            color: red;
+        }
+        .log-message.success {
+            color: green;
+        }
+        h1 {
+            text-align: center;
+        }
+
+        /* Mobile-friendly styles */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column; /* Panels stack vertically */
+            }
+            #test-results, #log-container {
+                flex: none; /* Disable equal width for stacked panels */
+                width: 100%; /* Panels take full width */
+                margin-bottom: 10px;
+            }
+            #log-container {
+                height: 300px; /* Reduce height on smaller screens */
+            }
+        }
+    </style>
 </head>
 <body>
 <h1>NeuroJS Test Results</h1>
-<div id="test-results"></div>
+<div class="container">
+    <div id="test-results">
+        <strong>Test Results:</strong>
+    </div>
+    <div id="log-container">
+        <strong>Execution Logs:</strong>
+    </div>
+</div>
 </body>
 </html>

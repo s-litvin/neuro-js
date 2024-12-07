@@ -13,22 +13,55 @@ function logResult(testName, passed) {
 }
 
 function runTests() {
+    writeLog("Starting tests...");
     try {
         logResult("Basic test 1: Forward Pass", testForwardPass());
+        writeLog("Basic test 1: Forward Pass completed.", "success");
+
         logResult("Basic test 2: Backpropagation", testBackPropagation());
+        writeLog("Basic test 2: Backpropagation completed.", "success");
+
         logResult("Basic test 3: Weights", testGetWeights());
+        writeLog("Basic test 3: Weights completed.", "success");
+
         logResult("Test 4: ForwardPass. Sigmoid", testForwardPassSigmoid());
+        writeLog("Test 4: ForwardPass. Sigmoid completed.", "success");
+
         logResult("Test 5: ForwardPass. RELU", testForwardPassRELU());
+        writeLog("Test 5: ForwardPass. RELU completed.", "success");
+
         logResult("Test 6: ForwardPass. LEAKYRELU", testForwardPassLeakyRELU());
+        writeLog("Test 6: ForwardPass. LEAKYRELU completed.", "success");
+
         logResult("Test 7: ForwardPass. TANH", testForwardPassTanh());
-        logResult("Test 8: Backpropagation", testBackPropagationComplex());
+        writeLog("Test 7: ForwardPass. TANH completed.", "success");
+
+        logResult("Test 8: Backpropagation Complex", testBackPropagationComplex());
+        writeLog("Test 8: Backpropagation Complex completed.", "success");
+
         logResult("Test 9: Benchmark", testMultiInputOutputBenchmark());
-        logResult("Test 9: Regression", testRegression());
+        writeLog("Test 9: Benchmark completed.", "success");
+
+        logResult("Test 10: Regression", testRegression());
+        writeLog("Test 10: Regression completed.", "success");
+
+        writeLog("All tests completed successfully!", "success");
     } catch (error) {
         console.error(error);
         const resultContainer = document.getElementById("test-results");
         resultContainer.textContent = `Error running tests: ${error.message}`;
+        writeLog(`Error: ${error.message}`, "error");
     }
+}
+
+function writeLog(message, type = "log") {
+    const logContainer = document.getElementById("log-container");
+    const logMessage = document.createElement("div");
+    logMessage.className = `log-message ${type}`;
+    logMessage.textContent = message;
+    logContainer.appendChild(logMessage);
+    logContainer.scrollTop = logContainer.scrollHeight;
+    console.log(message);
 }
 
 function testForwardPass() {
@@ -251,7 +284,7 @@ function testBackPropagationComplex() {
 }
 
 function testMultiInputOutputBenchmark() {
-    console.log("Starting benchmark test with 5 inputs and 3 outputs...");
+    writeLog("Starting benchmark test with 5 inputs and 3 outputs...")
 
     // 1. Train data
     const trainingData = [
@@ -271,7 +304,7 @@ function testMultiInputOutputBenchmark() {
     ]);
 
     // 3. Training
-    console.log("Training...");
+    writeLog("Training...");
     const epochs = 1000;
     for (let epoch = 0; epoch < epochs; epoch++) {
         for (let data of trainingData) {
@@ -282,21 +315,21 @@ function testMultiInputOutputBenchmark() {
         }
 
         if (epoch % 100 === 0 || epoch === epochs - 1) {
-            console.log(`Epoch: ${epoch}, Net Error: ${perceptron.getNetError().toFixed(7)}`);
+            writeLog(`Epoch: ${epoch}, Net Error: ${perceptron.getNetError().toFixed(7)}`);
         }
     }
 
     // 4. Testing
-    console.log("\nTesting...");
+    writeLog("\nTesting...");
     let allPassed = true;
     for (let data of trainingData) {
         perceptron.setInputVector(data.inputs);
         perceptron.forwardPass();
         const outputs = perceptron.getOutputVector();
 
-        console.log(`Input: ${data.inputs}`);
-        console.log(`Output: ${outputs.map(o => o.toFixed(3))}`);
-        console.log(`Expected: ${data.outputs}`);
+        writeLog(`Input: ${data.inputs}`);
+        writeLog(`Output: ${outputs.map(o => o.toFixed(3))}`);
+        writeLog(`Expected: ${data.outputs}`);
 
         // Accuracy checking
         const isCloseEnough = outputs.every((output, index) =>
@@ -305,23 +338,23 @@ function testMultiInputOutputBenchmark() {
 
         if (!isCloseEnough) {
             allPassed = false;
-            console.warn(`Test failed for input: ${data.inputs}`);
+            writeLog(`Test failed for input: ${data.inputs}`);
         } else {
-            console.info(`Test successful for input: ${data.inputs}`);
+            writeLog(`Test successful for input: ${data.inputs}`);
         }
     }
 
     if (allPassed) {
-        console.log("All tests passed!");
+        writeLog("All tests passed!");
         return true;
     } else {
-        console.error("Some tests failed.");
+        writeLog("Some tests failed.");
         return false;
     }
 }
 
 function testRegression() {
-    console.log("Starting regression test with normalized data...");
+    writeLog("Starting regression test with normalized data...");
 
     // Normalized training data (inputs scaled to [0, 1], targets scaled to [0, 1])
     const trainingData = [
@@ -341,7 +374,7 @@ function testRegression() {
     ]);
 
     // Training
-    console.log("Training...");
+    writeLog("Training...");
     const epochs = 200;
     for (let epoch = 0; epoch < epochs; epoch++) {
         for (let data of trainingData) {
@@ -352,12 +385,12 @@ function testRegression() {
         }
 
         if (epoch % 100 === 0 || epoch === epochs - 1) {
-            console.log(`Epoch: ${epoch}, Net Error: ${perceptron.getNetError().toFixed(7)}`);
+            writeLog(`Epoch: ${epoch}, Net Error: ${perceptron.getNetError().toFixed(7)}`);
         }
     }
 
     // Testing
-    console.log("\nTesting regression results...");
+    writeLog("\nTesting regression results...");
     const testData = [
         {input: [0.125], expected: [0.125]}, // input: 0.5, target: 2.5
         {input: [0.375], expected: [0.375]}, // input: 1.5, target: 4.5
@@ -371,24 +404,24 @@ function testRegression() {
         perceptron.forwardPass();
         const output = perceptron.getOutputVector();
 
-        console.log(`Input: ${data.input}`);
-        console.log(`Output: ${output.map(o => o.toFixed(3))}`);
-        console.log(`Expected: ${data.expected}`);
+        writeLog(`Input: ${data.input}`);
+        writeLog(`Output: ${output.map(o => o.toFixed(3))}`);
+        writeLog(`Expected: ${data.expected}`);
 
         const isCloseEnough = Math.abs(output[0] - data.expected[0]) < 0.05;
         if (!isCloseEnough) {
             allPassed = false;
-            console.warn(`Test failed for input: ${data.input}`);
+            writeLog(`Test failed for input: ${data.input}`);
         } else {
-            console.info(`Test successful for input: ${data.input}`);
+            writeLog(`Test successful for input: ${data.input}`);
         }
     }
 
     if (allPassed) {
-        console.log("Regression test with normalized data passed!");
+        writeLog("Regression test with normalized data passed!");
         return true;
     } else {
-        console.error("Regression test with normalized data failed.");
+        writeLog("Regression test with normalized data failed.");
         return false;
     }
 }
