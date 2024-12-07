@@ -20,7 +20,7 @@ canvas.height = 800;
 
 let perceptron;
 const epochs = 1400;
-let epoch =0;
+let epoch = 0;
 let dataIndex = 0;
 
 const trainingData = [
@@ -30,6 +30,7 @@ const trainingData = [
     { inputs: [0.3, 0.1, 0.4, 0.7, 0.2], outputs: [0.11, 0.33, 0.14] },
     { inputs: [0.7, 0.6, 0.5, 0.4, 0.3], outputs: [0.41, 0.46, 0.21] }
 ];
+let errors = new Array(trainingData.length).fill(0)
 
 function setup() {
 
@@ -61,6 +62,7 @@ function draw() {
         perceptron.forwardPass();
         perceptron.backPropagation();
 
+        errors[dataIndex] = perceptron.getNetError();
         epoch++;
         dataIndex = (dataIndex + 1) % trainingData.length;
     } else {
@@ -70,6 +72,7 @@ function draw() {
 
     const color = getColorByIndex(dataIndex, trainingData.length);
     drawNet(perceptron, color);
+    drawTrainingDataset(trainingData, 20, 300, 750, 20);
 }
 
 function getMousePosition(canvas, event) {
@@ -104,6 +107,35 @@ function getColorByIndex(index, totalIndices) {
     return `hsl(${hue}, 100%, 50%)`;
 }
 
+function drawTrainingDataset(dataset, x, y, xOffset = 0, yOffset = 0) {
+    const lineHeight = 15;
+    const fontSize = 12;
+    const legendSize = 10;
+
+    ctx.font = `${fontSize}px Arial`;
+
+    ctx.fillStyle = "#000000";
+    ctx.fillText("Training dataset:", x + xOffset, y + yOffset);
+
+
+    dataset.forEach((data, index) => {
+        const inputs = data.inputs.map(v => v.toFixed(2)).join(", ");
+        const outputs = data.outputs.map(v => v.toFixed(2)).join(", ");
+        const error = errors[index] || 0;
+        const text = `inputs: [${inputs}] outputs: [${outputs}] error: ${error.toFixed(3)}`;
+
+        // Рисуем текст
+        ctx.fillStyle = "#000000";
+        ctx.fillText(text, x + xOffset + legendSize + 5, y + yOffset + (index + 1) * lineHeight);
+
+        // Рисуем цветную легенду
+        const color = getColorByIndex(index, dataset.length); // Генерируем цвет для текущего индекса
+        ctx.fillStyle = color;
+        ctx.fillRect(x + xOffset, y + yOffset + (index + 1) * lineHeight - 10, legendSize, legendSize); // Квадрат легенды
+    });
+}
+
+
 function drawNet(perceptron, datasetColor) {
 
     ctx.font = "13px Arial";
@@ -132,6 +164,8 @@ function drawNet(perceptron, datasetColor) {
     // graph
     let gX = 820;
     let gY = 272;
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, gY+30, canvas.width, canvas.height);
     const errorGraphSizeX = 350;
     ctx.beginPath();
     ctx.moveTo(gX, gY - 252);
@@ -222,5 +256,4 @@ function drawNet(perceptron, datasetColor) {
             }
         }
     }
-
 }
