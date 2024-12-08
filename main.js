@@ -233,10 +233,14 @@ function drawNeuralNetwork(perceptron) {
 
     perceptron.layers.forEach((layer, layerIndex) => {
         const neurons = perceptron.getNeuronsByLayer(layer);
+        const x = 20 + NEURON_SPACING_X * layerIndex;
+
+        // get layer activation type and draw it
+        const activation = neurons[0]?.cell.activation || Cell.LINEAR;
+        drawActivationFunction(layerIndex, activation, x, 70);
 
         neurons.forEach((neuron, neuronIndex) => {
-            const x = 20 + NEURON_SPACING_X * layerIndex;
-            const y = 50 + NEURON_SPACING_Y * neuronIndex;
+            const y = 70 + NEURON_SPACING_Y * neuronIndex;
 
             neuronPositions[neuron.id] = [x, y];
             drawNeuron(neuron, x, y, neuronPositions);
@@ -305,6 +309,13 @@ function getNeuronColor(neuron) {
     if (neuron.cell.layer === perceptron.layers.length - 1) return "#b5e8b8";
     return "#e3e2e5";
 }
+
+function drawActivationFunction(layerIndex, activation, x, y) {
+    ctx.fillStyle = "#ccc";
+    ctx.font = "12px Arial";
+    ctx.fillText(activation, x, y - 20);
+}
+
 
 function adjustLearningRate(delta) {
     learningRate = perceptron.getLearningRate() + delta;

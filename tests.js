@@ -39,8 +39,8 @@ function runTests() {
         logResult("Test 8: Backpropagation Complex", testBackPropagationComplex());
         writeLog("Test 8: Backpropagation Complex completed.", "success");
 
-        logResult("Test 9: Benchmark", testMultiInputOutputBenchmark());
-        writeLog("Test 9: Benchmark completed.", "success");
+        logResult("Test 9: Function Approximation", testFunctionApproximation());
+        writeLog("Test 9: Function Approximation completed.", "success");
 
         logResult("Test 10: Regression", testRegression());
         writeLog("Test 10: Regression completed.", "success");
@@ -286,8 +286,8 @@ function testBackPropagationComplex() {
     return true;
 }
 
-function testMultiInputOutputBenchmark() {
-    writeLog("Starting benchmark test with 5 inputs and 3 outputs...")
+function testFunctionApproximation() {
+    writeLog("Starting Function Approximation test with 5 inputs and 3 outputs...")
 
     // 1. Train data
     const trainingData = [
