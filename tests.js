@@ -45,6 +45,9 @@ function runTests() {
         logResult("Test 10: Regression", testRegression());
         writeLog("Test 10: Regression completed.", "success");
 
+        logResult("Test 10: Autoencoder", testAutoencoder());
+        writeLog("Test 10: Autoencoder completed.", "success");
+
         writeLog("All tests completed successfully!", "success");
     } catch (error) {
         console.error(error);
@@ -422,6 +425,75 @@ function testRegression() {
         return true;
     } else {
         writeLog("Regression test with normalized data failed.");
+        return false;
+    }
+}
+
+function testAutoencoder() {
+    writeLog("Starting Autoencoder test...");
+
+    // 1. Training data
+    const trainingData = [
+        { input: [1, 0, 1, 0], target: [1, 0, 1, 0] },
+        { input: [0, 1, 0, 1], target: [0, 1, 0, 1] },
+        { input: [1, 1, 0, 0], target: [1, 1, 0, 0] },
+        { input: [0, 0, 1, 1], target: [0, 0, 1, 1] }
+    ];
+
+    // 2. Autoencoder setup
+    const perceptron = new Perceptron(0.6, 0.0001);
+    perceptron.createLayers([
+        { size: 4, activation: Cell.SIGMOID }, // Input layer
+        { size: 2, activation: Cell.SIGMOID }, // Hidden layer (encoding)
+        { size: 4, activation: Cell.SIGMOID }  // Output layer (decoding)
+    ]);
+
+    // 3. Training
+    writeLog("Training Autoencoder...");
+    const epochs = 1000;
+    for (let epoch = 0; epoch < epochs; epoch++) {
+        for (let data of trainingData) {
+            perceptron.setInputVector(data.input);
+            perceptron.setOutputVector(data.target);
+            perceptron.forwardPass();
+            perceptron.backPropagation();
+        }
+
+        if (epoch % 100 === 0 || epoch === epochs - 1) {
+            writeLog(`Epoch: ${epoch}, Net Error: ${perceptron.getNetError().toFixed(7)}`);
+        }
+    }
+
+    // 4. Testing
+    writeLog("Testing Autoencoder...");
+    let allPassed = true;
+    for (let data of trainingData) {
+        perceptron.setInputVector(data.input);
+        perceptron.forwardPass();
+        const output = perceptron.getOutputVector();
+
+        writeLog(`Input: ${data.input}`);
+        writeLog(`Output: ${output.map(o => o.toFixed(3))}`);
+        writeLog(`Expected: ${data.target}`);
+
+        // Check if output is close to expected
+        const isCloseEnough = output.every((value, index) =>
+            Math.abs(value - data.target[index]) < 0.1
+        );
+
+        if (!isCloseEnough) {
+            allPassed = false;
+            writeLog(`Test failed for input: ${data.input}`);
+        } else {
+            writeLog(`Test successful for input: ${data.input}`);
+        }
+    }
+
+    if (allPassed) {
+        writeLog("Autoencoder test passed!", "success");
+        return true;
+    } else {
+        writeLog("Autoencoder test failed.", "error");
         return false;
     }
 }
