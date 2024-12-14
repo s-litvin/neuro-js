@@ -21,7 +21,9 @@ const BUTTONS = [
     { x: 870, y: 0, width: 40, height: 20, color: "#FF9800", text: "LR -" },
 
     { x: 920, y: 0, width: 40, height: 20, color: "#555555", text: "DR +" },
-    { x: 970, y: 0, width: 40, height: 20, color: "#FF5577", text: "DR -" }
+    { x: 970, y: 0, width: 40, height: 20, color: "#FF5577", text: "DR -" },
+
+    { x: 1020, y: 0, width: 70, height: 20, color: "#007700", text: "Load CSV" }
 ];
 
 
@@ -55,9 +57,9 @@ function restart() {
     perceptron = new Perceptron(learningRate, 0.00001);
 
     perceptron.createLayers([
-        { size: 5, activation: Cell.LINEAR },
+        { size: trainingData[0].inputs.length, activation: Cell.LINEAR },
         { size: 4, activation: Cell.SIGMOID },
-        { size: 3, activation: Cell.LINEAR },
+        { size: trainingData[0].outputs.length, activation: Cell.LINEAR },
     ]);
 
     perceptron.setInputVector(trainingData[0].inputs);
@@ -117,6 +119,35 @@ canvas.addEventListener("click", function (event) {
                     break;
                 case "DR -":
                     adjustDropoutRate(-0.01); // Dropout rate decrease
+                    break;
+                case "Load CSV":
+                    loadCSVData((data) => {
+                        trainingData.length = 0;
+
+                        const firstRow = data[0];
+                        const inputColumns = [];
+                        const outputColumns = [];
+
+                        Object.keys(firstRow).forEach((key) => {
+                            if (key.toLowerCase().startsWith("input")) {
+                                inputColumns.push(key);
+                            } else if (key.toLowerCase().startsWith("output")) {
+                                outputColumns.push(key);
+                            }
+                        });
+
+                        data.forEach((row) => {
+                            const inputs = inputColumns.map((col) => parseFloat(row[col] || 0));
+                            const outputs = outputColumns.map((col) => parseFloat(row[col] || 0));
+                            trainingData.push({ inputs, outputs });
+                        });
+
+                        restart();
+
+                        console.log("New training data loaded:", trainingData);
+                        console.log("Input columns:", inputColumns);
+                        console.log("Output columns:", outputColumns);
+                    });
                     break;
             }
         }
@@ -340,3 +371,39 @@ function adjustDropoutRate(delta) {
     dropoutRate = Math.max(0.0, Math.min(newRate, 1.0));
     perceptron.setDropoutRate(dropoutRate);
 }
+
+function loadCSVData(callback) {
+    const inputElement = document.createElement("input");
+    inputElement.type = "file";
+    inputElement.accept = ".csv";
+
+    inputElement.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const csvContent = e.target.result;
+                const parsedData = parseCSV(csvContent);
+                callback(parsedData);
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    inputElement.click();
+}
+
+
+function parseCSV(csvString, delimiter = ",") {
+    const rows = csvString.trim().split("\n");
+    const headers = rows[0].split(delimiter);
+
+    return rows.slice(1).map((row) => {
+        const values = row.split(delimiter);
+        return headers.reduce((acc, header, index) => {
+            acc[header.trim()] = parseFloat(values[index].trim());
+            return acc;
+        }, {});
+    });
+}
+
