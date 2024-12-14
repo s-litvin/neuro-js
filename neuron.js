@@ -17,6 +17,7 @@ class Cell
 		this.isBias = isBias;
 		this.isRecurrent = isRecurrent;
 		this.activation = [Cell.RELU, Cell.LEAKYRELU, Cell.SIGMOID, Cell.TANH, Cell.LINEAR].includes(activation) ? activation : Cell.SIGMOID;
+		this.active = true;
 	}
 
 	setInput(input) {
@@ -52,12 +53,28 @@ class Cell
 		this.error = this.targetOutput - this.getOutput();
 	}
 
+	setActive(isActive) {
+		this.active = isActive;
+	}
+
+	isActive() {
+		return this.active;
+	}
+
 
 	getOutput() {
 		return this.output;
 	}
 
 	calcOutput(inputSum) {
+
+		// dropuouts
+		if (!this.isActive()) {
+			this.setOutput(0);
+
+			return this.getOutput();
+		}
+
 		if (this.isBias) {
 			this.setOutput(1);
 		} else {

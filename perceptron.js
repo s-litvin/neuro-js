@@ -6,6 +6,7 @@ class Perceptron
 		this.totalError = 0;
 		this.learningRate = learningRate;
 		this.errorTrashold = errorTrashhold;
+		this.dropoutRate = 0;
 		this.resetEpoch();
 	}
 
@@ -229,7 +230,41 @@ class Perceptron
 		return weights;
 	}
 
+	setDropoutRate(rate) {
+		this.dropoutRate = Math.max(0, Math.min(rate, 1)); // 0..1
+	}
+
+	applyDropout() {
+		if (this.dropoutRate === 0) return;
+
+		// applying dropouts only for hidden layers
+		for (let i = 1; i < this.layers.length - 1; i++) {
+			const layer = this.getNeuronsByLayer(this.layers[i]);
+
+			layer.forEach((neuron) => {
+				if (!neuron.cell.isBias) {
+					const isActive = Math.random() > this.dropoutRate;
+					neuron.cell.setActive(isActive);
+					// this.updateNeuron(neuron.id, neuron);
+				}
+			});
+		}
+	}
+
+	resetDropout() {
+		// reset dropout for all layers (before forward pass)
+		for (let i = 1; i < this.layers.length - 1; i++) {
+			const layer = this.getNeuronsByLayer(this.layers[i]);
+
+			layer.forEach((neuron) => {
+				neuron.cell.setActive(true);
+			});
+		}
+	}
+
 	forwardPass() {
+
+		this.applyDropout();
 
 		this.setRecurrentInputs();
 		
@@ -252,6 +287,8 @@ class Perceptron
 				this.updateNeuron(neuron.id, neuron);
 			}
 		}
+
+		this.resetDropout();
 	}
 
 	calcErrors() {
