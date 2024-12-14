@@ -33,6 +33,7 @@ canvas.height = CANVAS_HEIGHT;
 
 let perceptron;
 let learningRate = 0.5;
+let dropoutRate = 0.0;
 const epochs = 1500;
 let epoch = 0;
 let dataIndex = 0;
@@ -61,7 +62,7 @@ function restart() {
 
     perceptron.setInputVector(trainingData[0].inputs);
     perceptron.setOutputVector(trainingData[0].outputs);
-    perceptron.setDropoutRate(0.01);
+    perceptron.setDropoutRate(dropoutRate);
 }
 
 function setup() {
@@ -336,6 +337,6 @@ function adjustLearningRate(delta) {
 function adjustDropoutRate(delta) {
     const currentRate = perceptron.dropoutRate || 0;
     let newRate = currentRate + delta;
-    newRate = Math.max(0.0, Math.min(newRate, 1.0));
-    perceptron.setDropoutRate(newRate);
+    dropoutRate = Math.max(0.0, Math.min(newRate, 1.0));
+    perceptron.setDropoutRate(dropoutRate);
 }
