@@ -155,7 +155,28 @@ Now you have simple perceptron:
 --(input2)----(hidden2)
 ```
 
-5. Forward pass.
+### Dropout
+
+**Dropout** is a regularization technique used to prevent overfitting in neural networks. During training, dropout randomly disables a fraction of neurons in a layer for each forward pass. This helps the network become more robust by forcing it to learn redundant representations.
+
+#### How Dropout Works
+- Dropout rate is the fraction of neurons to disable during training. For example, a rate of `0.5` means 50% of neurons will be randomly deactivated in each forward pass.
+- In **Neuro-JS**, you can enable dropout by specifying a rate when configuring the perceptron:
+  ```javascript
+  perceptron.setDropoutRate(0.5); // Set dropout rate to 50%
+  ```
+- The dropout mechanism is applied only during the training phase, so don't forget to turn it off after training completed. During inference (when the network is making predictions), all neurons are active, and their outputs are scaled appropriately.
+
+#### Use Cases
+- Prevents overfitting by ensuring that no single neuron becomes overly dominant in the network.
+- Encourages the network to generalize better to unseen data.
+- Useful in tasks where the dataset is small or has significant variability.
+
+#### Demo Features
+In the demo provided with **Neuro-JS**, you can adjust the dropout rate in real-time during the training process. Use the buttons `DR +` and `DR -` in the interface to increase or decrease the dropout rate dynamically. This allows for quick experimentation to find the optimal configuration for your network.
+
+
+4. Forward pass.
 ``` 
 perceptron.forwardPass();
 ```
@@ -165,6 +186,11 @@ perceptron.forwardPass();
 perceptron.backPropagation();
 ```
 
+## Tests
+
+For more examples, visit the [test page](https://s-litvin.github.io/neuro-js/tests.html). This page provides various test cases demonstrating the capabilities of **Neuro-JS**.
+
+The examples shown on the test page are executed using the `tests.js` file included in the repository. You can explore these examples to understand different ways to configure and train neural networks using this library.
 
 ## Demo
 Check demo on GitHub page: https://s-litvin.github.io/neuro-js/
@@ -172,8 +198,3 @@ Check demo on GitHub page: https://s-litvin.github.io/neuro-js/
 ![](https://raw.githubusercontent.com/s-litvin/neuro-js/master/preview.png)
  
 
-### Additional Examples
-
-For more examples, visit the [test page](https://s-litvin.github.io/neuro-js/tests.html). This page provides various test cases demonstrating the capabilities of **Neuro-JS**.
-
-The examples shown on the test page are executed using the `tests.js` file included in the repository. You can explore these examples to understand different ways to configure and train neural networks using this library.
