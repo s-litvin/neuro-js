@@ -1,8 +1,25 @@
-
-
 # Neuro-JS
 
 Neuro-JS is a lightweight JavaScript library for creating and training neural networks using backpropagation. It is designed for simplicity and flexibility, making it easy to experiment with different network configurations directly in the browser.
+
+## Table of Contents
+- [Features](#features)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installing](#installing)
+- [Using](#using)
+  - [Create Perceptron](#create-perceptron)
+  - [Activation Functions](#activation-functions)
+  - [Manual Neurons Linking](#manual-neurons-linking)
+  - [Neuron Naming Convention](#neuron-naming-convention)
+- [Dropout](#dropout)
+  - [How Dropout Works](#how-dropout-works)
+  - [Use Cases](#use-cases)
+  - [Demo Features](#demo-features)
+- [Tests](#tests)
+- [Demo](#demo)
+
+---
 
 ## Features
 
@@ -39,14 +56,16 @@ Include Neuro-JS to your html-page
 
 Or use **index.html** (demo) from neuro-js project directory.
 
-### Using
+## Using
 
-1. Create perceptron (with learning rate and error trashold)
-```
-perceptron = new Perceptron(0.98, 0.001);
-```
+### Create Perceptron
 
-2. Add neurons using array of neurones numbers for each layer.
+1. Create perceptron (with learning rate and error threshold):
+   ```javascript
+   perceptron = new Perceptron(0.98, 0.001);
+   ```
+
+2. Add neurons using array of neuron numbers for each layer:
 
 createLayers(neuronesCountForEachLayer, linkAutomatically);
 ```
@@ -67,26 +86,16 @@ activation function (*'sigmoid'* is default):
 ```
 perceptron.createLayers([{'size': 2}, {'size': 2, 'activation': Cell::RELU}, {'size': 1, 'activation': Cell::LINEAR}]);
 ```
-Available activatio types:
+Available activation types:
 
 - Cell.RELU
 - Cell.LEAKYRELU
 - Cell.SIGMOID
 - Cell.TANH
 - Cell.LINEAR
+---
 
-
-You can add recurrent layer, by adding type 'recurrent':
-```
-perceptron.createLayers([{'size': 2}, {'size': 2, 'type': Cell.TYPE_RECURRENT}, {'size': 1, 'activation': Cell::LINEAR}]);
-```
-
-
-_2 input neurones for 1st layer, 2 hidden neurones for 2nd layer and 1 output neuron in last 3rd layer. Neurones will be linked automatically._
-
-
-### Manual neurons linking
-### Manual Neuron Linking in Neuro-JS
+### Manual Neurons Linking
 
 In **Neuro-JS**, you can manually link neurons instead of relying on automatic linking. To do this, set the second parameter in the `createLayers` method to `false`. By default, this parameter is `true`, enabling automatic linking.
 
@@ -155,36 +164,33 @@ Now you have simple perceptron:
 --(input2)----(hidden2)
 ```
 
-### Dropout
+## Dropout
 
 **Dropout** is a regularization technique used to prevent overfitting in neural networks. During training, dropout randomly disables a fraction of neurons in a layer for each forward pass. This helps the network become more robust by forcing it to learn redundant representations.
 
-#### How Dropout Works
+### How Dropout Works
+
 - Dropout rate is the fraction of neurons to disable during training. For example, a rate of `0.5` means 50% of neurons will be randomly deactivated in each forward pass.
 - In **Neuro-JS**, you can enable dropout by specifying a rate when configuring the perceptron:
   ```javascript
   perceptron.setDropoutRate(0.5); // Set dropout rate to 50%
   ```
 - The dropout mechanism is applied only during the training phase, so don't forget to turn it off after training completed. During inference (when the network is making predictions), all neurons are active, and their outputs are scaled appropriately.
+---
 
-#### Use Cases
+### Use Cases
+
 - Prevents overfitting by ensuring that no single neuron becomes overly dominant in the network.
 - Encourages the network to generalize better to unseen data.
 - Useful in tasks where the dataset is small or has significant variability.
 
-#### Demo Features
+---
+
+### Demo Features
+
 In the demo provided with **Neuro-JS**, you can adjust the dropout rate in real-time during the training process. Use the buttons `DR +` and `DR -` in the interface to increase or decrease the dropout rate dynamically. This allows for quick experimentation to find the optimal configuration for your network.
 
-
-4. Forward pass.
-``` 
-perceptron.forwardPass();
-```
-
-6. Backpropagation.
-``` 
-perceptron.backPropagation();
-```
+---
 
 ## Tests
 
