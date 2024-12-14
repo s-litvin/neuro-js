@@ -16,8 +16,12 @@ const EPOCH_BAR_HEIGHT = 20;
 const BUTTONS = [
     { x: 575, y: 0, width: 82, height: 20, color: "#FF6161", text: "Train again" },
     { x: 695, y: 0, width: 82, height: 20, color: "#00AAFF", text: "Screenshot" },
+
     { x: 820, y: 0, width: 40, height: 20, color: "#555500", text: "LR +" },
     { x: 870, y: 0, width: 40, height: 20, color: "#FF9800", text: "LR -" },
+
+    { x: 920, y: 0, width: 40, height: 20, color: "#555555", text: "DR +" },
+    { x: 970, y: 0, width: 40, height: 20, color: "#FF5577", text: "DR -" }
 ];
 
 
@@ -57,6 +61,7 @@ function restart() {
 
     perceptron.setInputVector(trainingData[0].inputs);
     perceptron.setOutputVector(trainingData[0].outputs);
+    perceptron.setDropoutRate(0.01);
 }
 
 function setup() {
@@ -68,8 +73,6 @@ function draw() {
 
     if (epoch < epochs) {
         trainCurrentData();
-    } else {
-        perceptron.forwardPass();
     }
 
     const color = getColorByIndex(dataIndex, trainingData.length);
@@ -107,6 +110,12 @@ canvas.addEventListener("click", function (event) {
                     break;
                 case "LR -":
                     adjustLearningRate(-0.05); // Learning rate decrease
+                    break;
+                case "DR +":
+                    adjustDropoutRate(0.01); // Dropout rate increase
+                    break;
+                case "DR -":
+                    adjustDropoutRate(-0.01); // Dropout rate decrease
                     break;
             }
         }
@@ -192,10 +201,11 @@ function drawBackground() {
     ctx.fillRect(0, 0, CANVAS_WIDTH, EPOCH_BAR_HEIGHT);
 
     ctx.fillStyle = "white";
-    ctx.fillText(`Epoch: ${perceptron.getEpoch()}`, 20, 15);
-    ctx.fillText(`Learning rate: ${perceptron.getLearningRate().toFixed(2)}`, 120, 15);
-    ctx.fillText(`Net error: ${perceptron.getNetError().toFixed(4)}`, 260, 15);
-    ctx.fillText(`Err threshold: ${perceptron.getErrorTrashold()}`, 420, 15);
+    ctx.fillText(`Epoch: ${perceptron.getEpoch()}`, 15, 15);
+    ctx.fillText(`Learning rate: ${perceptron.getLearningRate().toFixed(2)}`, 90, 15);
+    ctx.fillText(`Dropout rate: ${(perceptron.dropoutRate || 0).toFixed(2)}`, 210, 15);
+    ctx.fillText(`Net error: ${perceptron.getNetError().toFixed(4)}`, 320, 15);
+    ctx.fillText(`Err threshold: ${perceptron.getErrorTrashold()}`, 430, 15);
 
     drawButtons();
 }
@@ -321,4 +331,11 @@ function adjustLearningRate(delta) {
     learningRate = perceptron.getLearningRate() + delta;
     learningRate = Math.max(0.00001, Math.min(learningRate, 1)); // limit LR in range [0.00001, 1]
     perceptron.setLearningRate(learningRate);
+}
+
+function adjustDropoutRate(delta) {
+    const currentRate = perceptron.dropoutRate || 0;
+    let newRate = currentRate + delta;
+    newRate = Math.max(0.0, Math.min(newRate, 1.0));
+    perceptron.setDropoutRate(newRate);
 }

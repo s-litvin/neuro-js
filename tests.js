@@ -45,8 +45,11 @@ function runTests() {
         logResult("Test 10: Regression", testRegression());
         writeLog("Test 10: Regression completed.", "success");
 
-        logResult("Test 10: Autoencoder", testAutoencoder());
-        writeLog("Test 10: Autoencoder completed.", "success");
+        logResult("Test 11: Autoencoder", testAutoencoder());
+        writeLog("Test 11: Autoencoder completed.", "success");
+
+        logResult("Test 12: Dropout", testDropout());
+        writeLog("Test 12: Dropout completed.", "success");
 
         writeLog("All tests completed successfully!", "success");
     } catch (error) {
@@ -496,6 +499,66 @@ function testAutoencoder() {
         writeLog("Autoencoder test failed.", "error");
         return false;
     }
+}
+
+function testDropout() {
+    writeLog("Starting Dropout Test...");
+
+    const trainingData = [
+        { inputs: [0.1, 0.2, 0.3], outputs: [0.5] },
+        { inputs: [0.4, 0.5, 0.6], outputs: [0.9] },
+        { inputs: [0.7, 0.8, 0.9], outputs: [1.3] },
+    ];
+
+    const perceptronWithoutDropout = new Perceptron(0.1, 0.0001);
+    perceptronWithoutDropout.createLayers([
+        { size: 3, activation: Cell.LINEAR }, // Входной слой
+        { size: 5, activation: Cell.SIGMOID }, // Скрытый слой
+        { size: 1, activation: Cell.LINEAR }, // Выходной слой
+    ], false);
+
+    const perceptronWithDropout = new Perceptron(0.1, 0.0001);
+    perceptronWithDropout.createLayers([
+        { size: 3, activation: Cell.LINEAR }, // Входной слой
+        { size: 5, activation: Cell.SIGMOID }, // Скрытый слой
+        { size: 1, activation: Cell.LINEAR }, // Выходной слой
+    ], false);
+
+    const weights = [
+        { id1: 'x00', id2: 'h10', weight: 0.5 },
+        { id1: 'x01', id2: 'h10', weight: 0.3 },
+        { id1: 'x02', id2: 'h10', weight: 0.2 },
+        { id1: 'h10', id2: 'y20', weight: 0.7 },
+    ];
+    weights.forEach(({ id1, id2, weight }) => {
+        perceptronWithoutDropout.link(id1, id2, weight);
+        perceptronWithDropout.link(id1, id2, weight);
+    });
+
+    perceptronWithDropout.setDropoutRate(0.7);
+
+    function evaluate(perceptron, data) {
+        perceptron.setInputVector(data.inputs);
+        perceptron.forwardPass();
+
+        return perceptron.getOutputVector();
+    }
+
+    let totalDifference = 0;
+
+    trainingData.forEach((data) => {
+        const outputWithoutDropout = evaluate(perceptronWithoutDropout, data);
+        const outputWithDropout = evaluate(perceptronWithDropout, data);
+
+        const difference = Math.abs(outputWithoutDropout[0] - outputWithDropout[0]);
+        totalDifference +=difference;
+
+        writeLog(`Input: ${data.inputs}, Without Dropout: ${outputWithoutDropout[0].toFixed(4)}, With Dropout: ${outputWithDropout[0].toFixed(4)}, Difference: ${difference.toFixed(4)}`);
+    });
+
+    writeLog('Dropout output total difference: ' + totalDifference.toFixed(4));
+
+    return totalDifference > 0.5;
 }
 
 
