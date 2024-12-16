@@ -6,7 +6,7 @@ const GRAPH_WIDTH = 350;
 const GRAPH_HEIGHT = 250;
 const NEURON_SIZE = 28;
 const NEURON_SPACING_X = 120;
-const NEURON_SPACING_Y = 60;
+const NEURON_SPACING_Y = 45;
 const DATASET_X = GRAPH_X - 40;
 const DATASET_Y = GRAPH_HEIGHT + 80;
 const LEGEND_SIZE = 10;
@@ -36,7 +36,7 @@ canvas.height = CANVAS_HEIGHT;
 let perceptron;
 let learningRate = 0.5;
 let dropoutRate = 0.0;
-const epochs = 1500;
+let epochs = 1500;
 let epoch = 0;
 let dataIndex = 0;
 
@@ -54,6 +54,7 @@ function restart() {
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     epoch = 0;
+    dataIndex = 0;
     perceptron = new Perceptron(learningRate, 0.00001);
 
     perceptron.createLayers([
@@ -141,6 +142,8 @@ canvas.addEventListener("click", function (event) {
                             const outputs = outputColumns.map((col) => parseFloat(row[col] || 0));
                             trainingData.push({ inputs, outputs });
                         });
+
+                        epochs = trainingData.length * 5;
 
                         restart();
 
