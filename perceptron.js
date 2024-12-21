@@ -291,42 +291,46 @@ class Perceptron
 		this.resetDropout();
 	}
 
-	calcErrors() {
-
+	calcErrors(useReward = false, reward = null) {
 		this.totalError = 0;
 		this.epoch++;
 
 		for (let li = this.layers.length - 1; li >= 0; li--) {
-			let neurones = this.getNeuronsByLayer(this.layers[li]);
+			let neurons = this.getNeuronsByLayer(this.layers[li]);
 
-			for (let i = 0; i < neurones.length; i++) {
-				let neuron = neurones[i];
-
+			for (let i = 0; i < neurons.length; i++) {
+				let neuron = neurons[i];
 				let rightLinks = this.getNeuronLinks(neuron, 'right');
 
-
-				if (rightLinks.length === 0) { // for last layer error is the difference between expected output and input
-					neuron.cell.setError(neuron.cell.getTargetOutput() - neuron.cell.getOutput());
-				} else { // if the layer is hidden, then the error is the sum of the errors of the right nodes multiplied by the weights.
+				if (li === this.layers.length - 1) {
+					// if it's last layer
+					if (useReward && reward !== null) {
+						// using reward
+						neuron.cell.setError(reward - neuron.cell.getOutput());
+					} else {
+						// using output and target difference
+						neuron.cell.setError(neuron.cell.getTargetOutput() - neuron.cell.getOutput());
+					}
+				} else {
+					// for hidden layers
 					let errorsSum = 0;
-
 					for (let j = 0; j < rightLinks.length; j++) {
 						let rightNeuron = rightLinks[j].neuron;
 						errorsSum += rightNeuron.cell.getError() * rightLinks[j].weight;
 					}
-
 					neuron.cell.setError(errorsSum);
 				}
 
 				this.updateNeuron(neuron.id, neuron);
 
-				if (li === this.layers.length - 1) {
-					// this.totalError += neuron.cell.getError();
+				// Sum total error
+				if (li === this.layers.length - 1 && !useReward) {
 					this.totalError += 0.5 * Math.pow(neuron.cell.getTargetOutput() - neuron.cell.getOutput(), 2);
 				}
 			}
 		}
 	}
+
 
 	updateWeights() {
 		for (let i = 0; i < this.layers.length; i++) {
@@ -349,8 +353,8 @@ class Perceptron
 		}
 	}
 
-	backPropagation() {
-		this.calcErrors();
+	backPropagation(useReward = false, reward = null) {
+		this.calcErrors(useReward, reward);
 		this.updateWeights();
 	}
 }

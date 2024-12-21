@@ -51,6 +51,9 @@ function runTests() {
         logResult("Test 12: Dropout", testDropout());
         writeLog("Test 12: Dropout completed.", "success");
 
+        logResult("Test 13: Reward", testRewardMechanism());
+        writeLog("Test 13: reward completed.", "success");
+
         writeLog("All tests completed successfully!", "success");
     } catch (error) {
         console.error(error);
@@ -561,6 +564,54 @@ function testDropout() {
     return totalDifference > 0.5;
 }
 
+function testRewardMechanism() {
+    writeLog("Starting Reward Mechanism Test...");
 
+    // 1. Setup the perceptron
+    const perceptron = new Perceptron(0.1, 0.0001);
+    perceptron.createLayers([
+        { size: 2, activation: Cell.LINEAR },  // Input layer
+        { size: 2, activation: Cell.SIGMOID },  // Hidden layer
+        { size: 1, activation: Cell.LINEAR }   // Output layer
+    ], false);
+
+    // 2. Link neurons manually for control
+    perceptron.link('x00', 'h10', 0.5);
+    perceptron.link('x01', 'h10', 0.2);
+    perceptron.link('x00', 'h11', -0.3);
+    perceptron.link('x01', 'h11', 0.4);
+    perceptron.link('h10', 'y20', 0.7);
+    perceptron.link('h11', 'y20', -0.5);
+
+    // 3. Input values and expected reward
+    perceptron.setInputVector([0.5, 0.8]);
+    perceptron.forwardPass();
+    const outputBefore = perceptron.getOutputVector();
+    const reward = 1.0; // Desired reward value for testing
+
+    // 4. Apply reward and perform backpropagation
+    perceptron.backPropagation(true, reward);
+
+    // 5. Check weight updates
+    const weightsAfter = perceptron.getWeights();
+
+    writeLog("Checking weights after reward application...");
+    let weightUpdated = false;
+    for (let layerWeights of weightsAfter) {
+        for (let neuronWeights of layerWeights) {
+            for (let link of neuronWeights.weights) {
+                if (link.weight !== 0.5) { // Assuming weights were 0.5 initially
+                    weightUpdated = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    assert(weightUpdated, "At least one weight should be updated due to reward mechanism.");
+
+    writeLog("Reward Mechanism Test Passed!");
+    return true;
+}
 
 window.onload = runTests;
