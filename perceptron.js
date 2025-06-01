@@ -10,6 +10,39 @@ class Perceptron
 		this.resetEpoch();
 	}
 
+	toJSON() {
+		return {
+			__type: 'Perceptron',
+			learningRate: this.learningRate,
+			errorTrashold: this.errorTrashold,
+			epoch: this.epoch,
+			totalError: this.totalError,
+			dropoutRate: this.dropoutRate,
+			cells: this.cells.map(({ id, cell, links, layer }) => ({
+				id,
+				layer,
+				links,
+				cell: cell.toJSON(),
+			})),
+		};
+	}
+
+	static fromJSON(data) {
+		const p = new Perceptron(data.learningRate, data.errorTrashold);
+		p.epoch = data.epoch;
+		p.totalError = data.totalError;
+		p.dropoutRate = data.dropoutRate;
+		p.cells = data.cells.map(({ id, layer, links, cell }) => ({
+			id,
+			layer,
+			links,
+			cell: Cell.fromJSON(cell),
+		}));
+		p.indexLayers();
+		return p;
+	}
+
+
 	setLearningRate(learningRate) {
 		this.learningRate = learningRate;
 	}

@@ -20,6 +20,29 @@ class Cell
 		this.active = true;
 	}
 
+	toJSON() {
+		return {
+			__type: 'Cell',
+			layer: this.layer,
+			isBias: this.isBias,
+			isRecurrent: this.isRecurrent,
+			activation: this.activation,
+			input: this.input,
+			output: this.output,
+			error: this.error,
+			active: this.active,
+		};
+	}
+
+	static fromJSON(data) {
+		const cell = new Cell(data.layer, data.isBias, data.isRecurrent, data.activation);
+		cell.input = data.input;
+		cell.output = data.output;
+		cell.error = data.error;
+		cell.active = data.active;
+		return cell;
+	}
+
 	setInput(input) {
 		this.input = input;
 	}

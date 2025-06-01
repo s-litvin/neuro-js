@@ -54,6 +54,9 @@ function runTests() {
         logResult("Test 13: Reward", testRewardMechanism());
         writeLog("Test 13: reward completed.", "success");
 
+        logResult("Test 14: Save and Load", testSaveAndLoad());
+        writeLog("Test 14: Save and Load completed.", "success");
+
         writeLog("All tests completed successfully!", "success");
     } catch (error) {
         console.error(error);
@@ -613,5 +616,43 @@ function testRewardMechanism() {
     writeLog("Reward Mechanism Test Passed!");
     return true;
 }
+
+function testSaveAndLoad() {
+    writeLog("Starting Save and Load test...");
+
+    const perceptron = new Perceptron(0.1, 0.001);
+    perceptron.createLayers([
+        { size: 2, activation: Cell.LINEAR },
+        { size: 1, activation: Cell.SIGMOID }
+    ], false);
+
+    perceptron.link('x00', 'y10', 0.5);
+    perceptron.link('x01', 'y10', -0.4);
+
+    const input = [1.0, 0.5];
+    perceptron.setInputVector(input);
+    perceptron.forwardPass();
+    const originalOutput = perceptron.getOutputVector()[0];
+
+    // Save the model
+    const savedPerceptron = NetworkManager.freeze(perceptron);
+
+    // Load into a new perceptron
+    const restoredPerceptron = NetworkManager.revive(savedPerceptron);
+
+    restoredPerceptron.setInputVector(input);
+    restoredPerceptron.forwardPass();
+    const loadedOutput = restoredPerceptron.getOutputVector()[0];
+
+    // Compare outputs
+    assert(
+        Math.abs(originalOutput - loadedOutput) < 0.00001,
+        `Loaded model output mismatch. Expected ${originalOutput}, got ${loadedOutput}`
+    );
+
+    writeLog("Save and Load test passed!");
+    return true;
+}
+
 
 window.onload = runTests;

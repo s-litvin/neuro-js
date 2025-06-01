@@ -16,6 +16,7 @@ Neuro-JS is a lightweight JavaScript library for creating and training neural ne
   - [How Dropout Works](#how-dropout-works)
   - [Use Cases](#use-cases)
   - [Demo Features](#demo-features)
+- [Save and Load](#save-and-load-network)
 - [Tests](#tests)
 - [Demo](#demo)
 
@@ -189,6 +190,19 @@ Now you have simple perceptron:
 ### Demo Features
 
 In the demo provided with **Neuro-JS**, you can adjust the dropout rate in real-time during the training process. Use the buttons `DR +` and `DR -` in the interface to increase or decrease the dropout rate dynamically. This allows for quick experimentation to find the optimal configuration for your network.
+
+---
+
+### Save and Load Network
+
+You can serialize and restore a network using `NetworkManager.freeze()` and `NetworkManager.revive()`:
+
+```js
+const json = NetworkManager.freeze(perceptron);
+const restored = NetworkManager.revive(json);
+```
+
+This preserves the full network structure, weights, and configuration. Check tests to see how it works.
 
 ---
 
