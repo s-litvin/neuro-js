@@ -590,7 +590,7 @@ function testRewardMechanism() {
     const reward = 1.0; // Desired reward value for testing
 
     // 4. Apply reward and perform backpropagation
-    perceptron.backPropagation(true, reward);
+    perceptron.backPropagation(reward);
 
     // 5. Check weight updates
     const weightsAfter = perceptron.getWeights();

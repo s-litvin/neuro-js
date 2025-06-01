@@ -291,7 +291,7 @@ class Perceptron
 		this.resetDropout();
 	}
 
-	calcErrors(useReward = false, reward = null) {
+	calcErrors(reward = null) {
 		this.totalError = 0;
 		this.epoch++;
 
@@ -304,7 +304,7 @@ class Perceptron
 
 				if (li === this.layers.length - 1) {
 					// if it's last layer
-					if (useReward && reward !== null) {
+					if (reward !== null) {
 						// using reward
 						neuron.cell.setError(reward - neuron.cell.getOutput());
 					} else {
@@ -324,7 +324,7 @@ class Perceptron
 				this.updateNeuron(neuron.id, neuron);
 
 				// Sum total error
-				if (li === this.layers.length - 1 && !useReward) {
+				if (li === this.layers.length - 1 && !reward) {
 					this.totalError += 0.5 * Math.pow(neuron.cell.getTargetOutput() - neuron.cell.getOutput(), 2);
 				}
 			}
@@ -354,7 +354,7 @@ class Perceptron
 	}
 
 	backPropagation(useReward = false, reward = null) {
-		this.calcErrors(useReward, reward);
+		this.calcErrors(reward);
 		this.updateWeights();
 	}
 }
